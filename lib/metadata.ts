@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { site } from "@/lib/site";
 
 type PageMetadataOptions = {
-  /** Page title; the root layout's template adds " · Alex Rivera". */
+  /** Page title; the root layout's template adds " · Frankline Osoro". */
   title: string;
   description: string;
   /** Site path, also the canonical URL: "/work/relay". */

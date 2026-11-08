@@ -3,8 +3,7 @@
  * Everything here is mock data from the design handoff: replace with real details.
  */
 export const site = {
-  name: "Alex Rivera",
-  initials: "AR",
+  name: "Frankline Osoro",
   role: "AI fullstack engineer",
   /** Default meta description; the home page's description. */
   description:

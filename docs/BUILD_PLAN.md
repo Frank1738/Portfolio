@@ -24,7 +24,7 @@ Read `design_handoff_portfolio/README.md` for the full spec. `Portfolio.dc.html`
 | First-visit intro | As in the prototype: the home column starts hidden, the lines draw, then each block fades in (blur 8→0, rise 6px) and the lines retract. "The stack" starts 1500ms into the intro. Home page only, once per session, never with reduced motion. If the intro never starts, the column shows after 7s. **Trade-off accepted (phase 6):** this delays home-page LCP on first visits (about 3–4s on throttled mobile, budget < 2.0s), and Lighthouse always tests a first visit, so the home page's mobile Performance score will miss the ≥ 95 target. Phase 5 had drawn the lines over visible content instead; the owner preferred the designed order. |
 | Content | Case studies are typed TypeScript data (`content/work.ts`). Notes are MDX (`content/notes/*.mdx`). |
 | Routing | Real routes replace the prototype's hash routes. |
-| Copy | Keep the mock content (Alex Rivera, Northwind, metrics, links) until real details arrive. Keep it in data/MDX only, never in components. |
+| Copy | Keep the mock content (Northwind, metrics, links) until real details arrive. Keep it in data/MDX only, never in components. |
 
 ## Dependencies
 
@@ -98,7 +98,7 @@ Every phase ends with these checks:
 
 - [x] Avatar, name and role.
 - [x] Intro paragraphs with the highlighter marks.
-- [x] "The stack" block: 4 rows with per-row label colours and hairlines.
+- [x] "The stack" block: 4 rows with per-row label colours and hairlines; each skill is its own list item, set apart by a 16px gap (no separators) so keywords scan individually.
 - [x] Halfway-line divider: static now, animated in Phase 5.
 - [x] Tile grid:
   - [x] Selected work: full-width tile with the Relay screen (static final frame; the 7s loop is Phase 3)
@@ -267,10 +267,10 @@ Every phase ends with these checks:
 | `components/json-ld.tsx` | `JsonLd`: renders nodes as one escaped `@graph` script |
 | `lib/site.ts` | Added `description` (default meta description), `locale` (`en_GB`) and `absoluteUrl(path)` |
 | `lib/og.ts` | `ogSize`, `ogContentType`, `ogColors` (light tokens as plain values: keep in sync with `globals.css`), `ogFont`, `ogFonts` (TTFs read at module scope) |
-| `components/og/` | `og-card` (1200×630 card: avatar + "Name / Section", meta line, title, statement, halfway divider), `og-monogram` (the avatar; also the icons) |
+| `components/og/` | `og-card` (1200×630 card: avatar + "Name / Section", meta line, title, statement, halfway divider) |
 | `assets/fonts/` | Geist 400/500/600 and Geist Mono 400 TTFs (SIL OFL), read at build time by the image routes only |
 | `app/opengraph-image.tsx`, `app/work/[slug]/opengraph-image.tsx`, `app/notes/[num]/opengraph-image.tsx` | Share cards. /work and /notes inherit the home card |
-| `app/icon.tsx`, `app/apple-icon.tsx` | Generated 32px and 180px "AR" icons (replace Next's default `favicon.ico`, removed) |
+| `app/icon.tsx`, `app/apple-icon.tsx`, `lib/icon-mark.ts` | The site mark: a ball on the halfway line inside code brackets, "( ● )", on a mown accent-green pitch. `icon` serves it as SVG (sharp at any tab size); `apple-icon` renders it full bleed at 180px. Replaces Next's default `favicon.ico` (removed) |
 | `app/manifest.ts`, `app/sitemap.ts`, `app/robots.ts` | Built from `lib/site.ts` and the content accessors |
 | `app/layout.tsx` | Metadata defaults only (no canonical, so not-found doesn't inherit `/`); `ensureStatic = "navigation"` |
 
@@ -290,6 +290,8 @@ Every phase ends with these checks:
 | `components/ui/toggle-group.tsx` | Segments keep their 28×22 look; an `::after` extends the tap target to 30px tall |
 | Footer, notes-tile and page-header links | Padding cancelled by negative margin (`-my-1 py-1`): 24px+ tap targets, no layout change |
 | `next.config.ts` | Baseline security headers (nosniff, frame DENY, referrer, permissions). No CSP until the inline `<head>` scripts are hashed |
+| `assets/images/avatar.jpg` | Profile photo (288px square crop). Home avatar via `next/image`; the Open Graph card via `OgAvatar` (`components/og/og-avatar.tsx`, data URL from `lib/og.ts`) |
+| `components/page-header.tsx` | Below 480px only the name shows: "/ Section" repeats the back pill and ran under the toggle at 375px. Truncation stays as a fallback for very narrow screens |
 
 - **New route checklist** (addition): give the page's `<main>` `id="main"` for the skip link.
 

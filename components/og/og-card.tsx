@@ -1,4 +1,4 @@
-import { OgMonogram } from "@/components/og/og-monogram";
+import { OgAvatar } from "@/components/og/og-avatar";
 import { ogColors, ogFont, ogSize } from "@/lib/og";
 import { site } from "@/lib/site";
 
@@ -16,7 +16,7 @@ const titleStyles = {
 
 type OgCardProps = {
   kind: keyof typeof titleStyles;
-  /** After the name in the top row: "Alex Rivera / Case study". */
+  /** After the name in the top row: "Frankline Osoro / Case study". */
   section?: string;
   /** The mono meta line above the title; items are spaced like the post meta row. */
   meta: React.ReactNode;
@@ -45,7 +45,7 @@ export function OgCard({ kind, section, meta, title, description }: OgCardProps)
     >
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 24, fontSize: 28, color: ogColors.sub }}>
-          <OgMonogram size={72} />
+          <OgAvatar size={72} />
           <div style={{ display: "flex", whiteSpace: "pre" }}>
             <span style={{ color: ogColors.ink }}>{site.name}</span>
             {section && <span>{` / ${section}`}</span>}

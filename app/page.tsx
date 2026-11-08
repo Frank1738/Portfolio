@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 
+import avatar from "@/assets/images/avatar.jpg";
 import { HalfwayDivider } from "@/components/halfway-divider";
 import { BlueprintIntro } from "@/components/home/blueprint-intro";
 import { HomeFooter } from "@/components/home/home-footer";
@@ -30,13 +32,16 @@ export default function Home() {
       <BlueprintIntro />
       <main id="main">
         <div className="enter-0 flex items-start justify-between">
-          <div
-            aria-hidden="true"
+          {/* Decorative: the h1 below names the person. */}
+          <Image
+            src={avatar}
+            alt=""
             data-skel="15"
-            className="flex size-15 items-center justify-center rounded-xl border border-border bg-tile text-lg font-medium tracking-[-0.01em] text-ink transition-transform duration-200 ease-soft hover:scale-106"
-          >
-            {site.initials}
-          </div>
+            sizes="60px"
+            loading="eager"
+            placeholder="blur"
+            className="size-15 rounded-xl border border-border bg-tile object-cover transition-transform duration-200 ease-soft hover:scale-106"
+          />
           <div data-skel="999">
             <ThemeToggle />
           </div>

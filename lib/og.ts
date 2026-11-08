@@ -24,6 +24,14 @@ export const ogColors = {
   accent: "#15803d",
 } as const;
 
+/**
+ * The profile photo (`assets/images/avatar.jpg`) as a data URL for the Open Graph card.
+ * Read at module scope for the same reason as the fonts below.
+ */
+export const ogAvatarSrc = `data:image/jpeg;base64,${(
+  await readFile(join(process.cwd(), "assets/images/avatar.jpg"))
+).toString("base64")}`;
+
 /** Font family names used in the images' inline styles. */
 export const ogFont = { sans: "Geist", mono: "Geist Mono" } as const;
 

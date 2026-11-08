@@ -24,10 +24,10 @@ export const intro: IntroParagraph[] = [
 ];
 
 export const stack: StackRow[] = [
-  { label: "AI", tone: "ai", items: "LLM apps, RAG, agents, evals, fine-tuning" },
-  { label: "Backend", tone: "backend", items: "Python, Node.js, Postgres + pgvector, FastAPI" },
-  { label: "Frontend", tone: "frontend", items: "TypeScript, React, Next.js, data viz" },
-  { label: "Infra", tone: "infra", items: "Temporal, Kafka, ClickHouse, AWS, Vercel" },
+  { label: "AI", tone: "ai", items: ["LLM apps", "RAG", "Agents", "Fine-tuning", "Evals"] },
+  { label: "Backend", tone: "backend", items: ["Python", "Node.js", "Postgres", "FastAPI", "pgvector"] },
+  { label: "Frontend", tone: "frontend", items: ["TypeScript", "React", "Next.js", "Data viz"] },
+  { label: "Infra", tone: "infra", items: ["AWS", "Vercel", "Kafka", "Temporal", "ClickHouse"] },
 ];
 
 export const services: Service[] = [

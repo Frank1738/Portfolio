@@ -11,13 +11,14 @@ export type IntroParagraph = {
   parts: IntroPart[];
 };
 
-/** Row colours in "The stack"; each maps to a `--sk-*` token. */
+/** Row dot colours in "The stack"; each maps to a `--sk-*` token. */
 export type StackTone = "ai" | "backend" | "frontend" | "infra";
 
 export type StackRow = {
   label: string;
   tone: StackTone;
-  items: string;
+  /** One chip each, so recruiters can scan single keywords. */
+  items: string[];
 };
 
 /** A "Work with me" row: a mailto link with the subject pre-filled. */
