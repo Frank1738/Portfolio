@@ -1,0 +1,43 @@
+export const meta = {
+  number: "0002",
+  publishedAt: "2026-09-28",
+  readingMinutes: 6,
+  title: "What xG gets wrong, and how I'd fix it with an LLM",
+  excerpt:
+    "Event data can't see a keeper off his line or a striker falling backwards. Live commentary can. An experiment in turning text into features.",
+  figure: "bars",
+  caption: "Log loss on held-out 2025/26 shots. Lower is better.",
+};
+
+export const logLoss = [
+  { label: "Distance + angle", value: 0.312 },
+  { label: "+ body part, assist type", value: 0.291 },
+  { label: "+ defender positions", value: 0.278 },
+  { label: "+ LLM-tagged commentary", value: 0.269 },
+];
+
+Expected goals is the most useful number in football analytics and one of the most misunderstood. A shot's xG is the probability that an average player scores it, based on where it was taken and a handful of other features. It is a good summary of chance quality. It is not a description of what happened.
+
+## What the models can't see
+
+Public xG models mostly know location, angle, body part and the type of pass that set the shot up. They don't know that the keeper was off his line, that the striker was falling backwards, or that two defenders were already sliding across. Event data simply doesn't record it.
+
+Tracking data fixes some of this, but it is expensive and rarely public. What is public, in huge quantity, is text: live commentary, match reports and minute-by-minute blogs written by people who watched the chance happen.
+
+## The experiment
+
+I took 18,000 shots from three seasons and matched each one to its line of live commentary. A small language model read each line and tagged it from a fixed set of labels: keeper out of position, shot under pressure, deflected, first-time, weak foot. No free text, only structured features.
+
+Then I retrained a standard xG model with and without those tags, and compared them on a season the model had never seen.
+
+<NoteFigure caption={meta.caption}>
+  <LogLossBars bars={logLoss} />
+</NoteFigure>
+
+The LLM tags improved the model more than adding freeze-frame defender positions did, which surprised me. Most of the gain came from two tags: keeper out of position, and shot under pressure.
+
+## The catch
+
+Commentary is written by people who already know whether the shot went in. A goal gets described more vividly than a miss, and a model can learn that. I controlled for it by only tagging the text before the outcome word appears, but some leakage almost certainly remains.
+
+So I wouldn't use this to replace xG. I'd add it as an extra column, clearly labelled, for analysts who want to know why two 0.3 xG chances felt so different to watch.

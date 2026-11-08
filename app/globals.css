@@ -1,0 +1,446 @@
+@import "tailwindcss";
+
+/* Theme is driven by `data-theme` on <html> (set before first paint by ThemeScript). */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+@custom-variant light (&:where([data-theme="light"], [data-theme="light"] *));
+
+/* ---------------------------------------------------------------------------
+ * Design tokens (see design_handoff_portfolio/README.md → "Design tokens").
+ * --sub is darkened from #737373 to #6b6b6b in light mode for WCAG AA.
+ * ------------------------------------------------------------------------- */
+:root {
+  --bg: #ffffff;
+  --ink: #171717;
+  --sub: #6b6b6b;
+  --body: #4b5563;
+  --tile: #f5f5f5;
+  --border: #e5e5e5;
+  --border-hover: #d1d1d1;
+  --border-strong: color-mix(in srgb, var(--ink) 30%, transparent);
+  --line: #d4d4d4;
+  --accent: #15803d;
+  --hl-blue: #bfdbfe;
+  --hl-orange: #fed7aa;
+  --hl-pink: rgba(239, 71, 111, 0.22);
+  --sk-ai: #be185d;
+  --sk-be: #1d4ed8;
+  --sk-fe: var(--accent);
+  --sk-in: #c2410c;
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --bg: #121212;
+  --ink: #ffffff;
+  --sub: #a3a3a3;
+  --body: #9ca3af;
+  --tile: #171717;
+  --border: #292929;
+  --border-hover: #3f3f3f;
+  --line: #3a3a3a;
+  --accent: #22c55e;
+  --hl-blue: rgba(191, 219, 254, 0.2);
+  --hl-orange: rgba(254, 215, 170, 0.2);
+  --hl-pink: rgba(239, 71, 111, 0.3);
+  --sk-ai: #f472b6;
+  --sk-be: #60a5fa;
+  --sk-in: #fb923c;
+  color-scheme: dark;
+}
+
+@theme inline {
+  /* Only design colours exist: off-token colours fail to compile. */
+  --color-*: initial;
+  --color-bg: var(--bg);
+  --color-ink: var(--ink);
+  --color-sub: var(--sub);
+  --color-body: var(--body);
+  --color-tile: var(--tile);
+  --color-border: var(--border);
+  --color-border-hover: var(--border-hover);
+  --color-border-strong: var(--border-strong);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-hl-blue: var(--hl-blue);
+  --color-hl-orange: var(--hl-orange);
+  --color-hl-pink: var(--hl-pink);
+  --color-sk-ai: var(--sk-ai);
+  --color-sk-be: var(--sk-be);
+  --color-sk-fe: var(--sk-fe);
+  --color-sk-in: var(--sk-in);
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro", "Segoe UI", Roboto, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  /*
+   * For glyphs Geist Mono lacks (the → in mono labels). In `font-mono` they would come from
+   * next/font's metric-matched Arial fallback; the prototype draws them in the system mono.
+   */
+  --font-mono-system: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+@theme {
+  /* Type scale. No line-heights: text inherits the 1.6 body leading like the prototype. */
+  --text-*: initial;
+  --text-2xs: 11px; /* mono labels, dates, stats */
+  --text-xs: 12px; /* skills list */
+  --text-sm: 13px; /* small UI text */
+  --text-base: 15px; /* body, name, section headings */
+  --text-lg: 17px; /* case statement, note titles */
+  --text-2xl: 28px; /* post title */
+  --text-3xl: 36px; /* result numbers */
+  --text-4xl: 40px; /* case-study title */
+
+  --radius-*: initial;
+  --radius-sm: 6px; /* thumbnails, hover labels */
+  --radius-md: 8px; /* notes thumbnails */
+  --radius-lg: 10px; /* card media, diagram boxes */
+  --radius-xl: 15px; /* avatar */
+  --radius-2xl: 16px; /* tiles, case hero */
+
+  --tracking-label: 0.04em; /* uppercase mono labels */
+
+  --spacing-page-top: max(48px, min(14vh, 9vw)); /* top padding of the home page; sticky aside offset */
+  --spacing-below-header: max(48px, min(12vh, 8vw)); /* gap between PageHeader and the page content */
+
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-zoom: cubic-bezier(0.22, 0.8, 0.2, 1);
+  --ease-enter: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-shimmer: cubic-bezier(0.45, 0, 0.25, 1);
+}
+
+/* Dashed rules: 3px dash, 6px gap. */
+@utility dashed-x {
+  background-image: repeating-linear-gradient(to right, var(--line) 0 3px, transparent 3px 9px);
+}
+
+@utility dashed-y {
+  background-image: repeating-linear-gradient(to bottom, var(--line) 0 3px, transparent 3px 9px);
+}
+
+/* ---------------------------------------------------------------------------
+ * Product-screen loops (ProjectScreen). Every keyframe runs 0 → 1 over the 7s cycle;
+ * each element's entry time comes from its `linear()` easing, set by `loopAt()` in
+ * lib/loop-timing.ts as --loop-enter / --loop-fade. Opacity and transform only.
+ * Under reduced motion the global rule removes the animations, leaving the final frame.
+ * ------------------------------------------------------------------------- */
+:root {
+  /* Hold, then the shared ease-in fade from 93% (sampled cubic-bezier(.42,0,1,1)). */
+  --loop-exit: linear(1 0%, 1 93%, 0.956 94.17%, 0.844 95.33%, 0.685 96.5%, 0.488 97.67%, 0.26 98.83%, 0 100%);
+}
+
+/* PauseOffscreen sets this when the screen leaves the viewport. */
+[data-loop-paused] {
+  --loop-state: paused;
+}
+
+@keyframes loop-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes loop-rise {
+  from {
+    translate: 0 0.4em;
+  }
+  to {
+    translate: 0 0;
+  }
+}
+
+@keyframes loop-grow-x {
+  from {
+    scale: 0 1;
+  }
+  to {
+    scale: 1 1;
+  }
+}
+
+@keyframes loop-grow-y {
+  from {
+    scale: 1 0;
+  }
+  to {
+    scale: 1 1;
+  }
+}
+
+@keyframes loop-wipe {
+  from {
+    translate: -100% 0;
+  }
+  to {
+    translate: 0 0;
+  }
+}
+
+@keyframes loop-unwipe {
+  from {
+    translate: 100% 0;
+  }
+  to {
+    translate: 0 0;
+  }
+}
+
+/* Fade and rise .4em into place. */
+@utility loop-in {
+  animation:
+    loop-fade 7s var(--loop-fade) infinite,
+    loop-rise 7s var(--loop-enter) infinite;
+  animation-play-state: var(--loop-state, running);
+}
+
+/* Bars that grow from the left (pair with origin-left). */
+@utility loop-grow-x {
+  animation:
+    loop-fade 7s var(--loop-exit) infinite,
+    loop-grow-x 7s var(--loop-enter) infinite;
+  animation-play-state: var(--loop-state, running);
+}
+
+/* Bars that grow from the bottom (pair with origin-bottom). */
+@utility loop-grow-y {
+  animation:
+    loop-fade 7s var(--loop-exit) infinite,
+    loop-grow-y 7s var(--loop-enter) infinite;
+  animation-play-state: var(--loop-state, running);
+}
+
+/*
+ * Left-to-right reveal with transforms only: the clipping box (loop-wipe, overflow
+ * hidden) slides in while its child (loop-unwipe) slides the other way, so the content
+ * stays put and is uncovered from the left. Replaces the prototype's clip-path typing
+ * and stroke-dashoffset line draw.
+ */
+@utility loop-wipe {
+  overflow: hidden;
+  animation:
+    loop-fade 7s var(--loop-exit) infinite,
+    loop-wipe 7s var(--loop-enter) infinite;
+  animation-play-state: var(--loop-state, running);
+}
+
+@utility loop-unwipe {
+  animation: loop-unwipe 7s var(--loop-enter) infinite;
+  animation-play-state: var(--loop-state, running);
+}
+
+/* ---------------------------------------------------------------------------
+ * Page motion (README → "Interactions and motion"). CSS only: the route templates
+ * (app/template.tsx, app/work/template.tsx, app/notes/template.tsx) remount the page on
+ * every navigation, so these animations replay. Under reduced motion the global rule
+ * removes them all, leaving the final state.
+ * ------------------------------------------------------------------------- */
+:root {
+  --stack-start: 260ms; /* "The stack" draws in 260ms after the route enter starts */
+  --shimmer-start: 1000ms; /* the divider shimmer plays 1s after it */
+}
+
+/*
+ * The blueprint intro (lib/blueprint-intro.ts) plays over the home page on the first visit,
+ * as in the prototype: the column starts hidden, the lines draw, then each block fades in.
+ * `html[data-intro]` is set in <head> once the intro has decided to play; the intro moves it
+ * to `[data-intro-played]` on the home column when it starts, and from then on reveals the
+ * blocks itself. The route enter is off; the stack (1500ms) and the shimmer (3600ms) time
+ * from the intro's start.
+ */
+[data-intro],
+[data-intro-played] {
+  --stack-start: 1500ms;
+  --shimmer-start: 3600ms;
+}
+
+/* Until the intro starts, the home column and the divider line it hands off to are hidden, and the stack and shimmer wait. If the intro never starts, both show after 7s. */
+[data-intro] [data-intro-root],
+[data-intro] [data-intro-root] [data-divider-rule] {
+  opacity: 0;
+  animation: intro-give-up 0s 7s forwards;
+}
+
+[data-intro] [data-intro-root] [data-divider-rule] *,
+[data-intro] [data-intro-root] [data-divider-rule] ::after,
+[data-intro] [data-intro-root] .stack-reveal > *::before,
+[data-intro] [data-intro-root] .stack-reveal > *::after,
+[data-intro] [data-intro-root] .stack-reveal :is(dt, dd) {
+  animation-play-state: paused;
+}
+
+@keyframes intro-give-up {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Route enter: fade, un-blur and rise 6px over 600ms. `enter-N` staggers block N by 70ms (lib/motion.ts caps N at 8). */
+@keyframes route-enter {
+  from {
+    opacity: 0;
+    filter: blur(8px);
+    translate: 0 6px;
+  }
+}
+
+@utility enter-* {
+  animation: route-enter 600ms var(--ease-enter) calc(--value(integer) * 70ms) backwards;
+
+  /* During the intro its own block reveal replaces the route enter. */
+  &:where([data-intro] *, [data-intro-played] *) {
+    animation: none;
+  }
+}
+
+/* "The stack" (on its <dl>): each hairline draws in from the left, 90ms apart; 140ms after its line, a row's label then its skills (60ms later) slide in. Rows set --row. */
+@keyframes stack-line {
+  from {
+    scale: 0 1;
+  }
+}
+
+@keyframes stack-item {
+  from {
+    opacity: 0;
+    translate: -6px 0;
+  }
+}
+
+@utility stack-reveal {
+  & > *::before {
+    animation: stack-line 800ms var(--ease-soft) calc(var(--stack-start) + var(--row) * 90ms) backwards;
+  }
+
+  & > :last-child::after {
+    animation: stack-line 800ms var(--ease-soft) calc(var(--stack-start) + (var(--row) + 1) * 90ms) backwards;
+  }
+
+  & dt {
+    animation: stack-item 520ms var(--ease-soft) calc(var(--stack-start) + 140ms + var(--row) * 90ms) backwards;
+  }
+
+  & dd {
+    animation: stack-item 520ms var(--ease-soft) calc(var(--stack-start) + 200ms + var(--row) * 90ms) backwards;
+  }
+}
+
+/*
+ * Halfway-line shimmer: ink dashes under a gradient mask that sweeps left to right, twice.
+ * ShimmerReplay replays it once on mouse-enter by remounting the layers with
+ * [data-shimmer-replay]. Hidden at rest: the mask starts off the left edge.
+ */
+@keyframes shimmer-sweep {
+  from {
+    mask-position: -60% 0;
+  }
+  to {
+    mask-position: 160% 0;
+  }
+}
+
+/*
+ * The centre circle pulses as the band passes (40–65% of the eased sweep). The prototype
+ * eases the whole iteration; CSS eases per keyframe, so these offsets are those points in
+ * real time (cubic-bezier(.45,0,.25,1) solved for .4/.5/.65) with linear timing.
+ */
+@keyframes shimmer-ball {
+  0%,
+  34.9% {
+    scale: 1;
+  }
+  38.7% {
+    scale: 1.15;
+  }
+  45.5%,
+  100% {
+    scale: 1;
+  }
+}
+
+/* Ink ring over the circle's border: fades in instead of animating border-color. */
+@keyframes shimmer-ring {
+  0%,
+  34.9% {
+    opacity: 0;
+  }
+  38.7% {
+    opacity: 1;
+  }
+  45.5%,
+  100% {
+    opacity: 0;
+  }
+}
+
+[data-shimmer-replay] {
+  --shimmer-start: 0s;
+  --shimmer-count: 1;
+}
+
+@utility shimmer-sweep {
+  background-image: repeating-linear-gradient(to right, var(--ink) 0 3px, transparent 3px 9px);
+  opacity: 0.6;
+  mask-image: linear-gradient(90deg, transparent, #000 50%, transparent);
+  mask-size: 36% 100%;
+  mask-repeat: no-repeat;
+  mask-position: -60% 0;
+  animation: shimmer-sweep 2s var(--ease-shimmer) var(--shimmer-start) var(--shimmer-count, 2);
+}
+
+@utility shimmer-ball {
+  animation: shimmer-ball 2s linear var(--shimmer-start) var(--shimmer-count, 2);
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border: 1px solid var(--ink);
+    border-radius: inherit;
+    opacity: 0;
+    animation: shimmer-ring 2s linear var(--shimmer-start) var(--shimmer-count, 2);
+  }
+}
+
+/* Theme switch: lib/theme.ts animates a circular clip on the new snapshot, so drop the default cross-fade. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+@layer base {
+  body {
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--body);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  a {
+    transition: color 0.15s ease-out;
+  }
+
+  a:hover {
+    color: var(--accent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -1,0 +1,63 @@
+export const meta = {
+  number: "0003",
+  publishedAt: "2026-10-12",
+  readingMinutes: 7,
+  title: "I built a model to predict the Premier League. Here's how it did.",
+  excerpt:
+    "A full season of public, timestamped predictions against the closing odds. The honest scorecard, and where the model went wrong.",
+  figure: "line",
+  caption: "Brier score, rolling 50 matches. Lower is better.",
+};
+
+{/* Mock series from the design handoff: replace with Scout's real rolling scores. */}
+export const brier = {
+  label:
+    "Line chart of the rolling 50-match Brier score. Scout starts near .218, well above closing odds near .203, then falls to track them at about .195 to .197 from the middle of the season.",
+  xLabels: ["Match 50", "200", "380"],
+  model: {
+    name: "Scout",
+    values: [
+      0.2175, 0.216982, 0.21182, 0.207975, 0.208693, 0.206987, 0.201523, 0.199945, 0.201994, 0.200354, 0.197205,
+      0.199063, 0.201629, 0.19898, 0.196521, 0.19859, 0.198754, 0.194666, 0.193816, 0.197025, 0.196805, 0.194203,
+      0.196125, 0.199277, 0.197151, 0.19443, 0.196393, 0.197246, 0.193633, 0.192675, 0.196222, 0.196758, 0.194175,
+      0.195612,
+    ],
+  },
+  benchmark: {
+    name: "Closing odds",
+    values: [
+      0.202846, 0.202217, 0.199886, 0.198632, 0.199719, 0.201033, 0.20018, 0.197983, 0.197276, 0.198746, 0.199924,
+      0.198799, 0.196761, 0.196562, 0.198282, 0.199211, 0.197813, 0.195981, 0.196256, 0.198108, 0.198707, 0.197071,
+      0.195502, 0.196212, 0.198083, 0.198304, 0.196487, 0.195237, 0.196333, 0.198122, 0.197941, 0.196016, 0.195132,
+      0.196553,
+    ],
+  },
+};
+
+Last season I ran Scout, my Premier League prediction model, in public. Every prediction went to Discord an hour before kick-off, timestamped, with no way to quietly edit it afterwards. 380 matches later, here is the scorecard.
+
+## The setup
+
+Scout outputs three probabilities for every match: home win, draw, away win. It rebuilds team strength after each game from shot-level expected goals, then adjusts for the confirmed line-ups. Under the hood it is an XGBoost model with a Dixon-Coles Poisson model as one of its features.
+
+The benchmark was the closing bookmaker odds with the margin removed. Closing odds are the hardest target there is: they include every bit of team news and a great deal of informed money.
+
+## The headline numbers
+
+Scout picked the right result in 54% of matches. The bookmakers' favourite won 55% of the time. Accuracy is a blunt measure, though, so the number I care about is the Brier score, which punishes confident wrong predictions. Scout finished at 0.198 and closing odds at 0.196. Lower is better, so I lost, but only just.
+
+<NoteFigure caption={meta.caption}>
+  <BrierChart {...brier} />
+</NoteFigure>
+
+The gap was widest early on. Scout was clearly worse for the first ten gameweeks, while it had little current-season data, then tracked the market closely from November. Over the final 100 matches it was marginally ahead.
+
+## Where it went wrong
+
+Draws. Scout made a draw the most likely outcome only 11 times, and seven of those were right. The problem is the other 85 draws it never saw coming. Tree models are bad at the middle outcome, and the Dixon-Coles feature only partly fixed it.
+
+Promoted teams were the other weak spot. With no Premier League history, their early ratings leaned on Championship xG, which overrated all three of them until about Christmas.
+
+## What I'm changing
+
+This season Scout uses a separate draw model and a shrinkage prior for promoted sides. I am also publishing a calibration chart every month alongside the scorecard. If the model says 70%, it should be right about 70% of the time, and I want that to be checkable.

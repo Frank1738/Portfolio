@@ -1,0 +1,39 @@
+export const meta = {
+  number: "0001",
+  publishedAt: "2026-09-14",
+  readingMinutes: 4,
+  title: "Building a match-summary bot in a weekend",
+  excerpt:
+    "A spoiler-tagged summary of every match, posted the moment it ends. Why the reasoning lives in code and the model only writes.",
+  figure: "bot",
+  caption: "A post from the bot after the north London derby, spoiler tags removed.",
+};
+
+My friends' group chat has one rule on matchdays: no spoilers until everyone has watched. Which means by Sunday evening there are 200 unread messages and nobody knows what actually happened. So one weekend I built a bot that posts a short, spoiler-tagged summary of every match the moment it ends.
+
+## Saturday: the data
+
+The bot polls a free football data API every two minutes for full-time results, then pulls the match events: goals, cards, substitutions and shot xG. Everything goes into a single SQLite file, which is all a project this size needs.
+
+## Saturday night: the summary
+
+The first version sent the raw events to a language model and asked for a summary. It was fluent and often wrong. It would invent a second-half comeback when the winner came in the 12th minute.
+
+The fix was to do the reasoning in code and leave only the writing to the model. The script works out the story first: who led, when that changed, whether the xG agreed with the score. The model gets those facts as a short list and turns them into three sentences.
+
+<NoteFigure caption={meta.caption}>
+  <BotMessage
+    author="Matchday bot"
+    initials="MB"
+    time="Today 17:02"
+    title="FT · Arsenal 2–1 Tottenham"
+    stats="xG 1.84 – 0.92 · verdict: deserved"
+    message="Spurs led through Son after 21 minutes, against the run of play. Arsenal equalised from a corner just before half-time and Saka won it on 74 after Tottenham had sat deep for most of the second half."
+  />
+</NoteFigure>
+
+## Sunday: the details
+
+Spoiler tags took longer than the summary. Discord hides text wrapped in double bars, so the score and every sentence go inside them while the team names stay visible. I added an 'xG verdict' line because that was what my friends argued about most.
+
+Total cost is about 40p a month in model calls and nothing for hosting. It has posted 412 summaries so far, and it hasn't invented a comeback since.
