@@ -7,7 +7,7 @@ import { NextCard } from "@/components/next-card";
 import { PageHeader } from "@/components/page-header";
 import { formatShortDate } from "@/lib/format";
 import { pageMetadata } from "@/lib/metadata";
-import { formatReadingTime, getNextNote, getNote, getNotes, getNotesIndex } from "@/lib/notes";
+import { formatReadingTime, getNextNote, getNote, getNotes, getNotesIndex, isNotesPublished } from "@/lib/notes";
 import { blogPostingJsonLd, breadcrumbJsonLd } from "@/lib/structured-data";
 
 export function generateStaticParams() {
@@ -16,7 +16,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps<"/notes/[num]">): Promise<Metadata> {
   const note = getNote((await params).num);
-  if (!note) return {};
+  if (!note || !isNotesPublished()) return {};
 
   return pageMetadata({
     title: note.title,
@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: PageProps<"/notes/[num]">): P
 
 export default async function NotePage({ params }: PageProps<"/notes/[num]">) {
   const note = getNote((await params).num);
-  if (!note) notFound();
+  if (!note || !isNotesPublished()) notFound();
 
   const next = getNextNote(note.number);
   const { Content } = note;

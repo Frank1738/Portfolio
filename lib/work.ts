@@ -1,4 +1,4 @@
-import { caseStudies, workIndex } from "@/content/work";
+import { caseStudies, workIndex, workPublished, workTeaser } from "@/content/work";
 
 /** A box in the architecture flow: name on the left, mono detail on the right. */
 export type ArchitectureNode = {
@@ -41,6 +41,25 @@ export type WorkIndex = {
   title: string;
   description: string;
 };
+
+/** Home tile copy while the case studies aren't published yet. */
+export type WorkTeaser = {
+  /** Mono meta in the tile header. */
+  meta: string;
+  /** Pill label over the screen. */
+  label: string;
+  /** Shown in turn, one per tap; never empty. */
+  lines: [string, ...string[]];
+};
+
+/** Whether /work and the case studies are live. While false, the routes 404. */
+export function isWorkPublished(): boolean {
+  return workPublished;
+}
+
+export function getWorkTeaser(): WorkTeaser {
+  return workTeaser;
+}
 
 export function getWorkIndex(): WorkIndex {
   return workIndex;

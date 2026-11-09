@@ -22,7 +22,7 @@ npx tsc --noEmit
 | Notes | `content/notes/000N.mdx`, registered in `lib/notes.ts` |
 | Colours, type scale, motion | `app/globals.css` |
 
-The content is still mock data from the design handoff. Replace it before deploying: `lib/site.ts` also sets the canonical URLs, sitemap, structured data and share images.
+`lib/site.ts` also sets the canonical URLs, sitemap, structured data and share images from the site URL: set `SITE_URL` (e.g. `https://franklineosoro.dev`) when deploying to a custom domain. On Vercel, the project's production URL is used until then. Case studies and notes are still mock data and switched off (`workPublished`, `notesPublished`).
 
 ## Working on it
 

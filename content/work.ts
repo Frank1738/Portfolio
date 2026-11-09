@@ -1,10 +1,29 @@
-import type { CaseStudy, WorkIndex } from "@/lib/work";
+import type { CaseStudy, WorkIndex, WorkTeaser } from "@/lib/work";
 
 /** The /work page heading and description. */
 export const workIndex: WorkIndex = {
   title: "Selected work",
   description:
     "8 years building AI products end to end, from the first prototype and evals to the interface and the on-call rota. Five recent ones, each with a full write-up.",
+};
+
+/**
+ * Off while the case studies below are still mock data: /work and /work/[slug] return 404,
+ * they drop out of the sitemap, and the home tile shows the teaser instead of linking.
+ * Set to true once real case studies are in.
+ */
+export const workPublished = false;
+
+/** Home tile copy while work is unpublished. Each tap on the screen shows the next line. */
+export const workTeaser: WorkTeaser = {
+  meta: "On the stove",
+  label: "Something's cooking",
+  lines: [
+    "Case studies are simmering. No peeking.",
+    "Still simmering. Good things take time.",
+    "Smells good, right? Not ready yet.",
+    "Chef says: back soon. The lid stays on.",
+  ],
 };
 
 /**

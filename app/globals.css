@@ -403,6 +403,50 @@
   }
 }
 
+/*
+ * "Something's cooking" pot (CookingPot). Steam wisps rise and fade, 400ms apart (--i), only
+ * while an ancestor sets --steam-state: running (the tile on hover, focus or tap). The lid
+ * rattles once per tap. Under reduced motion the steam shows still and the lid stays put.
+ */
+@keyframes steam-rise {
+  0% {
+    opacity: 0;
+    translate: 0 3px;
+  }
+  35% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    translate: 0 -5px;
+  }
+}
+
+@keyframes lid-rattle {
+  20% {
+    rotate: -7deg;
+    translate: 0 -2px;
+  }
+  45% {
+    rotate: 5deg;
+    translate: 0 -1px;
+  }
+  70% {
+    rotate: -2deg;
+  }
+}
+
+@utility steam {
+  animation: steam-rise 1.6s ease-out calc(var(--i) * 400ms) infinite backwards;
+  animation-play-state: var(--steam-state, paused);
+}
+
+@utility lid-rattle {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: lid-rattle 450ms var(--ease-soft);
+}
+
 /* Theme switch: lib/theme.ts animates a circular clip on the new snapshot, so drop the default cross-fade. */
 ::view-transition-old(root),
 ::view-transition-new(root) {

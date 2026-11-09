@@ -1,4 +1,3 @@
-import { ExternalLink } from "@/components/external-link";
 import { CopyEmailButton } from "@/components/home/copy-email-button";
 import { TileHeader } from "@/components/home/tile-header";
 import { Tile } from "@/components/tile";
@@ -7,7 +6,7 @@ import { getServices } from "@/lib/home";
 import { mailto, site } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
-/** "Work with me" tile: availability, mailto service rows, Book a call and Copy email. */
+/** "Work with me" tile: availability, mailto service rows, Email me and Copy email. */
 export function WorkWithMeTile({ className }: { className?: string }) {
   return (
     <Tile data-skel="16" className={cn("gap-3", className)}>
@@ -42,9 +41,9 @@ export function WorkWithMeTile({ className }: { className?: string }) {
         ))}
       </ul>
       <div className="mt-auto flex gap-2">
-        <ExternalLink href={site.bookingUrl} className={cn(buttonVariants({ variant: "surface" }), "flex-1")}>
-          Book a call
-        </ExternalLink>
+        <a href={mailto()} className={cn(buttonVariants({ variant: "surface" }), "flex-1")}>
+          Email me
+        </a>
         <CopyEmailButton email={site.email} className="flex-1" />
       </div>
     </Tile>

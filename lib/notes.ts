@@ -3,10 +3,10 @@ import type { MDXContent } from "mdx/types";
 import Note0001, { meta as meta0001 } from "@/content/notes/0001.mdx";
 import Note0002, { meta as meta0002 } from "@/content/notes/0002.mdx";
 import Note0003, { meta as meta0003 } from "@/content/notes/0003.mdx";
-import { notesIndex } from "@/content/notes-index";
-import type { NoteMeta, NotesIndex } from "@/lib/note-types";
+import { notesIndex, notesPublished, readsTile } from "@/content/notes-index";
+import type { NoteMeta, NotesIndex, ReadsTile } from "@/lib/note-types";
 
-export type { NoteFigureKind, NoteMeta, NotesIndex } from "@/lib/note-types";
+export type { NoteFigureKind, NoteMeta, NotesIndex, Read, ReadsTile, ReadThumbKind } from "@/lib/note-types";
 
 export type Note = NoteMeta & {
   /** The compiled MDX body. */
@@ -19,6 +19,16 @@ const notes: readonly Note[] = [
   { ...meta0002, Content: Note0002 },
   { ...meta0003, Content: Note0003 },
 ].sort((a, b) => b.number.localeCompare(a.number));
+
+/** Whether /notes and the notes are live. While false, the routes 404. */
+export function isNotesPublished(): boolean {
+  return notesPublished;
+}
+
+/** Outside reads for the home tile while notes are unpublished. */
+export function getReadsTile(): ReadsTile {
+  return readsTile;
+}
 
 export function getNotesIndex(): NotesIndex {
   return notesIndex;

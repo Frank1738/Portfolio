@@ -1,14 +1,38 @@
 import Link from "next/link";
 
+import { CookingTile } from "@/components/home/cooking-tile";
 import { TileHeader } from "@/components/home/tile-header";
 import { tileVariants } from "@/components/tile";
 import { ProjectScreen } from "@/components/work/project-screen";
 import { padCount } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import { getCaseStudies } from "@/lib/work";
+import { getCaseStudies, getWorkTeaser, isWorkPublished } from "@/lib/work";
 
-/** Full-width linked tile with the Relay screen; leads to /work. */
+/** Full-width tile with the Relay screen; leads to /work, or teases it while unpublished. */
 export function SelectedWorkTile({ className }: { className?: string }) {
+  if (!isWorkPublished()) {
+    const teaser = getWorkTeaser();
+    return (
+      <CookingTile
+        teaser={teaser}
+        className={className}
+        header={
+          <TileHeader>
+            <h2 className="text-sm font-medium text-ink transition-colors duration-200 ease-[ease] group-hover/tile:text-accent">
+              Selected work
+            </h2>
+            <span className="flex items-center gap-1.5 font-mono text-2xs text-sub">
+              <span aria-hidden="true" className="size-1.5 rounded-full bg-accent" />
+              {teaser.meta}
+            </span>
+          </TileHeader>
+        }
+      >
+        <ProjectScreen kind="relay" />
+      </CookingTile>
+    );
+  }
+
   return (
     <Link href="/work" data-skel="16" className={cn(tileVariants({ pressable: true }), "col-span-full gap-3.5", className)}>
       <TileHeader>

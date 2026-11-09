@@ -3,6 +3,8 @@ import Link from "next/link";
 
 import { PageHeader } from "@/components/page-header";
 import { buttonVariants } from "@/components/ui/button";
+import { isNotesPublished } from "@/lib/notes";
+import { isWorkPublished } from "@/lib/work";
 
 // No canonical or Open Graph: Next marks the 404 response noindex.
 export const metadata: Metadata = {
@@ -21,12 +23,21 @@ export default function NotFound() {
         </h1>
         <p className="enter-3 mt-3.5 text-pretty">The link may be old, or the address mistyped.</p>
         <div className="enter-4 mt-8 flex flex-wrap gap-2">
-          <Link href="/work" className={buttonVariants({ variant: "surface" })}>
-            Selected work
-          </Link>
-          <Link href="/notes" className={buttonVariants({ variant: "outline" })}>
-            Matchday notes
-          </Link>
+          {isWorkPublished() && (
+            <Link href="/work" className={buttonVariants({ variant: "surface" })}>
+              Selected work
+            </Link>
+          )}
+          {isNotesPublished() && (
+            <Link href="/notes" className={buttonVariants({ variant: isWorkPublished() ? "outline" : "surface" })}>
+              Matchday notes
+            </Link>
+          )}
+          {!isWorkPublished() && !isNotesPublished() && (
+            <Link href="/" className={buttonVariants({ variant: "surface" })}>
+              Home
+            </Link>
+          )}
         </div>
       </main>
     </>

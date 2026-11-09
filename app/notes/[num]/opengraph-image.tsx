@@ -3,7 +3,7 @@ import { ImageResponse } from "next/og";
 import { OgCard } from "@/components/og/og-card";
 import { formatShortDate } from "@/lib/format";
 import { ogFonts, ogColors, ogContentType, ogSize } from "@/lib/og";
-import { formatReadingTime, getNote, getNotes, getNotesIndex } from "@/lib/notes";
+import { formatReadingTime, getNote, getNotes, getNotesIndex, isNotesPublished } from "@/lib/notes";
 import { site } from "@/lib/site";
 
 // Static per route type: `generateImageMetadata` would give per-page alt text, but its
@@ -18,7 +18,7 @@ export function generateStaticParams() {
 
 export default async function Image({ params }: { params: Promise<{ num: string }> }) {
   const note = getNote((await params).num);
-  if (!note) return new Response(null, { status: 404 });
+  if (!note || !isNotesPublished()) return new Response(null, { status: 404 });
 
   // The post's meta row: number in accent, date, read time.
   return new ImageResponse(

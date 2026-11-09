@@ -18,6 +18,7 @@ import {
   getCaseStudy,
   getNextCaseStudy,
   getWorkIndex,
+  isWorkPublished,
 } from "@/lib/work";
 
 export function generateStaticParams() {
@@ -26,7 +27,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps<"/work/[slug]">): Promise<Metadata> {
   const study = getCaseStudy((await params).slug);
-  if (!study) return {};
+  if (!study || !isWorkPublished()) return {};
 
   return pageMetadata({
     title: study.title,
@@ -38,7 +39,7 @@ export async function generateMetadata({ params }: PageProps<"/work/[slug]">): P
 
 export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]">) {
   const study = getCaseStudy((await params).slug);
-  if (!study) notFound();
+  if (!study || !isWorkPublished()) notFound();
 
   const next = getNextCaseStudy(study.slug);
 

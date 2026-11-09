@@ -1,23 +1,28 @@
 /**
- * Site-wide identity and contact details.
- * Everything here is mock data from the design handoff: replace with real details.
+ * Production origin, used for canonical URLs, the sitemap, structured data and share images.
+ * Set SITE_URL once there's a custom domain; on Vercel the project's production URL is used until then.
  */
+const siteUrl =
+  process.env.SITE_URL ??
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : "http://localhost:3000");
+
+/** Site-wide identity and contact details. */
 export const site = {
   name: "Frankline Osoro",
   role: "AI fullstack engineer",
   /** Default meta description; the home page's description. */
   description:
-    "AI fullstack engineer building LLM products end to end: retrieval, evals, APIs and the interface people actually click. Case studies and Matchday notes.",
+    "AI fullstack engineer at Duelbits, one of the leading names in iGaming. Before that, a few years shipping for startups across the US, UK and Europe with React, Next.js, Node.js and TypeScript.",
   /** Open Graph locale; the page language is `en`. */
   locale: "en_GB",
-  url: "https://alexrivera.dev",
-  email: "hello@alexrivera.dev",
-  bookingUrl: "https://cal.com/alexrivera/intro",
-  availability: "Open from Jan '27",
+  url: siteUrl,
+  email: "franklineosoro08@gmail.com",
+  availability: "Open to chat",
   social: [
-    { label: "GitHub", href: "https://github.com/alexrivera" },
-    { label: "LinkedIn", href: "https://www.linkedin.com/in/alexrivera" },
-    { label: "X", href: "https://x.com/alexrivera" },
+    { label: "GitHub", href: "https://github.com/Frank1738" },
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/franklineosoro/" },
   ],
 } as const;
 
@@ -28,7 +33,7 @@ export function mailto(subject?: string) {
     : `mailto:${site.email}`;
 }
 
-/** Absolute URL for a site path ("/work" → "https://alexrivera.dev/work"). */
+/** Absolute URL for a site path ("/work" → "https://example.com/work"). */
 export function absoluteUrl(path: string) {
   return new URL(path, site.url).toString();
 }
