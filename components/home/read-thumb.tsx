@@ -1,6 +1,6 @@
 import { useId } from "react";
 
-import type { ReadThumbKind } from "@/lib/note-types";
+import type { ReadThumbKind } from "@/lib/reads";
 import { cn } from "@/lib/utils";
 
 type ReadThumbProps = {
@@ -9,8 +9,8 @@ type ReadThumbProps = {
 };
 
 /**
- * Tiny drawing for an outside read, in the note thumbnails' style: a football (scores),
- * a newspaper with a tactics board (match reports) or a terminal (tech news). Decorative.
+ * Tiny drawing for an outside read, in the note thumbnails' style: a football (football news)
+ * or a terminal (tech and AI). Decorative.
  */
 export function ReadThumb({ kind, className }: ReadThumbProps) {
   // Unique per render: a fixed id would clash if the ball ever showed twice on a page.
@@ -47,19 +47,6 @@ export function ReadThumb({ kind, className }: ReadThumbProps) {
           </g>
           <path d="M29 21L33.8 24.5L31.9 30H26.1L24.2 24.5Z" className="fill-ink" />
           <circle cx="29" cy="26" r="14" className="stroke-sub" strokeWidth={1.5} />
-        </>
-      )}
-      {kind === "paper" && (
-        <>
-          <rect x="8.5" y="9.5" width="35" height="33" rx="3" className="stroke-border-hover" />
-          <path d="M13 15H39" className="stroke-ink" strokeWidth={2} />
-          <path d="M13 20.5H25M13 24.5H25M13 28.5H22M13 34.5H25M13 38H21" className="stroke-sub" strokeWidth={1.2} />
-          {/* Tactics board: a half pitch with a passing move. */}
-          <rect x="28.5" y="20.5" width="11" height="17" rx="1" className="stroke-sub" strokeWidth={1} />
-          <path d="M28.5 29H39.5" className="stroke-border-hover" strokeWidth={1} />
-          <circle cx="31.5" cy="34" r="1.3" className="fill-accent" />
-          <circle cx="36.5" cy="25" r="1.3" className="fill-accent" />
-          <path d="M32.3 32.5L35.7 26.5" className="stroke-accent" strokeWidth={1} strokeDasharray="1.5 1.5" />
         </>
       )}
       {kind === "terminal" && (

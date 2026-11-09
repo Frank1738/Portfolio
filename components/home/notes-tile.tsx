@@ -5,7 +5,8 @@ import { TileHeader } from "@/components/home/tile-header";
 import { NoteFigureIcon } from "@/components/notes/note-figure-icon";
 import { Tile } from "@/components/tile";
 import { formatShortDate, padCount } from "@/lib/format";
-import { getNotes, getReadsTile, isLatestNote, isNotesPublished } from "@/lib/notes";
+import { getNotes, isLatestNote, isNotesPublished } from "@/lib/notes";
+import { getLatestReads, getReadsTile } from "@/lib/reads";
 import { cn } from "@/lib/utils";
 
 /** "Matchday notes" tile: a compact, Medium-style list of every post, or outside reads until there are posts. */
@@ -58,9 +59,10 @@ export function NotesTile({ className }: { className?: string }) {
   );
 }
 
-/** Same layout as the notes list, linking out (new tab) to free sites. */
-function ReadsList({ className }: { className?: string }) {
-  const { title, meta, reads } = getReadsTile();
+/** Same layout as the notes list: the latest posts from a few feeds, opening in a new tab. */
+async function ReadsList({ className }: { className?: string }) {
+  const { title, meta } = getReadsTile();
+  const reads = await getLatestReads();
 
   return (
     <Tile data-skel="16" className={cn("gap-4", className)}>
@@ -70,7 +72,7 @@ function ReadsList({ className }: { className?: string }) {
       </TileHeader>
       <ul className="flex flex-1 flex-col justify-center">
         {reads.map((read) => (
-          <li key={read.id}>
+          <li key={read.href}>
             <a
               href={read.href}
               target="_blank"
@@ -78,13 +80,19 @@ function ReadsList({ className }: { className?: string }) {
               className="group/post grid grid-cols-[minmax(0,1fr)_48px] items-center gap-3 border-t border-border py-2.5 text-body"
             >
               <span className="flex min-w-0 flex-col gap-0.5">
-                <span className="font-mono text-2xs text-sub">
-                  {read.source} <span aria-hidden="true" className="font-mono-system">↗</span>
-                  <span className="sr-only"> (opens in a new tab)</span>
+                <span className="flex gap-1.5 font-mono text-2xs whitespace-nowrap text-sub">
+                  <span className="min-w-0 truncate">
+                    {read.source} <span aria-hidden="true" className="font-mono-system">↗</span>
+                  </span>
+                  <span aria-hidden="true">·</span>
+                  <time dateTime={read.publishedAt} className="shrink-0">
+                    {read.age}
+                  </time>
                 </span>
                 <span className="line-clamp-2 text-sm leading-[1.35] font-medium text-pretty text-ink transition-colors duration-150 ease-[ease] group-hover/post:text-accent">
                   {read.title}
                 </span>
+                <span className="sr-only"> (opens in a new tab)</span>
               </span>
               <span className="size-12 overflow-hidden rounded-sm border border-border bg-bg">
                 <span className="block size-full transition-transform duration-240 ease-zoom group-hover/post:scale-106">

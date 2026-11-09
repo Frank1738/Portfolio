@@ -36,6 +36,7 @@ Runtime packages to add:
 | `class-variance-authority` | Button and Badge variants |
 | `radix-ui` | `Slot` (button-styled links) and Toggle Group (theme switch) |
 | `@next/mdx`, `@mdx-js/loader`, `@mdx-js/react`, `@types/mdx` | MDX notes (compiled at build time) |
+| `fast-xml-parser` | RSS/Atom parsing for the home reading list (server only, nothing shipped to the browser) |
 
 shadcn/ui components: **Button**, **Toggle Group**, **Badge**. Add them with `npx shadcn@latest add`. Don't install the CLI as a dependency.
 
@@ -113,7 +114,7 @@ Every phase ends with these checks:
 |---|---|
 | `app/page.tsx` | Home: composes the blocks below. The footer sits outside `<main>` so it is the page's `contentinfo` landmark |
 | `components/tile.tsx` | `Tile` + `tileVariants({ pressable })`: tile surface, `group/tile` hover border, `.99` press on linked tiles |
-| `components/home/` | `intro`, `highlight` (cva tones blue/orange/pink), `stack-list`, `tile-header`, `selected-work-tile`, `notes-tile`, `work-with-me-tile`, `copy-email-button` (client), `home-footer`, `cooking-tile` (client) + `cooking-pot`: the "Something's cooking" Selected work tile shown while `workPublished` (content/work.ts) is false; /work routes 404 and leave the sitemap until it's true. `notes-tile` likewise lists outside reads (`readsTile`, content/notes-index.ts) while `notesPublished` is false, and /notes 404s |
+| `components/home/` | `intro`, `highlight` (cva tones blue/orange/pink), `stack-list`, `tile-header`, `selected-work-tile`, `notes-tile`, `work-with-me-tile`, `copy-email-button` (client), `home-footer`, `cooking-tile` (client) + `cooking-pot`: the "Something's cooking" Selected work tile shown while `workPublished` (content/work.ts) is false; /work routes 404 and leave the sitemap until it's true. `notes-tile` shows "Reading lately" while `notesPublished` is false (and /notes 404s): the newest post per feed slot from `content/reads.ts`, fetched and parsed on the server (`lib/reads.ts`, `lib/feed-parser.ts`) in a `"use cache"` scope with `cacheLife("hours")`, 5s timeout per feed, real fallback posts if all fail; `read-thumb` draws the ball/terminal thumbnails |
 | `components/notes/note-figure-icon.tsx` | Tiny figure SVG per `NoteFigureKind`. Phase 4 reuses it for the /notes thumbnails |
 | `components/work/project-screen.tsx` | `ProjectScreen`: container-query `em` frame, `aria-hidden`. Phase 3 added the other kinds and the loop (see below) |
 | `lib/home.ts`, `content/home.ts` | Home types and accessors (`getIntro`, `getStack`, `getServices`), and the home copy |

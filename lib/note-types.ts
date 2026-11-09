@@ -14,29 +14,6 @@ export type NoteMeta = {
   caption: string;
 };
 
-/** Read thumbnails: football (scores), newspaper (reports), terminal (tech). */
-export type ReadThumbKind = "ball" | "paper" | "terminal";
-
-/** An outside page the home tile links to while there are no notes of my own. */
-export type Read = {
-  /** Stable key. */
-  id: string;
-  /** Publication name, shown as the mono meta line. */
-  source: string;
-  /** Our own one-line description: never copied from the source. */
-  title: string;
-  href: string;
-  /** Thumbnail drawing (ReadThumb). */
-  thumb: ReadThumbKind;
-};
-
-/** Home tile header while notes are unpublished. */
-export type ReadsTile = {
-  title: string;
-  meta: string;
-  reads: Read[];
-};
-
 /** Heading and description of the /notes index page. */
 export type NotesIndex = {
   title: string;
