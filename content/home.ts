@@ -8,7 +8,7 @@ export const intro: IntroParagraph[] = [
     parts: [
       "By day I'm shipping at ",
       { text: "Duelbits", highlight: "blue" },
-      ", one of the leading names in iGaming, working across the whole stack: APIs, data and the screens players actually tap.",
+      ", working across the whole stack: APIs, data, and the screens players actually tap. I combine deep full-stack fundamentals with AI-driven development workflows to take products from rough idea to production fast.",
     ],
   },
   {
@@ -24,7 +24,11 @@ export const intro: IntroParagraph[] = [
 ];
 
 export const stack: StackRow[] = [
-  { label: "AI", tone: "ai", items: ["LLM integrations", "AI-powered UIs"] },
+  {
+    label: "AI",
+    tone: "ai",
+    items: ["OpenAI API", "Anthropic (Claude) API", "LLM integrations", "AI-powered UIs"],
+  },
   { label: "Frontend", tone: "frontend", items: ["TypeScript", "React", "Next.js", "Redux", "Tailwind CSS"] },
   { label: "Backend", tone: "backend", items: ["Node.js", "Express", "PostgreSQL", "MongoDB", "REST APIs"] },
   { label: "Tooling", tone: "infra", items: ["Docker", "GitHub Actions", "CI/CD", "Jest", "Cypress"] },
