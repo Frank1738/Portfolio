@@ -13,11 +13,15 @@ type NextCardProps = {
   className?: string;
 };
 
-/** "Next project" / "Next note" card at the end of a case study or post. */
+/**
+ * "Next project" / "Next note" card at the end of a case study or post. It prefetches the whole
+ * page (not just the route's shared App Shell): it's the likely next click, and every target is static.
+ */
 export function NextCard({ href, label, title, children, className }: NextCardProps) {
   return (
     <Link
       href={href}
+      prefetch
       className={cn(tileVariants({ pressable: true }), "flex-row items-center justify-between gap-4 px-4.5", className)}
     >
       <span className="flex min-w-0 flex-col gap-0.5">

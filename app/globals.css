@@ -187,12 +187,22 @@
   }
 }
 
+@keyframes loop-hide {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
 /* Fade and rise .4em into place. */
 @utility loop-in {
   animation:
     loop-fade 7s var(--loop-fade) infinite,
     loop-rise 7s var(--loop-enter) infinite;
   animation-play-state: var(--loop-state, running);
+  animation-delay: var(--loop-delay, 0s);
 }
 
 /* Bars that grow from the left (pair with origin-left). */
@@ -201,6 +211,7 @@
     loop-fade 7s var(--loop-exit) infinite,
     loop-grow-x 7s var(--loop-enter) infinite;
   animation-play-state: var(--loop-state, running);
+  animation-delay: var(--loop-delay, 0s);
 }
 
 /* Bars that grow from the bottom (pair with origin-bottom). */
@@ -209,6 +220,7 @@
     loop-fade 7s var(--loop-exit) infinite,
     loop-grow-y 7s var(--loop-enter) infinite;
   animation-play-state: var(--loop-state, running);
+  animation-delay: var(--loop-delay, 0s);
 }
 
 /*
@@ -223,11 +235,83 @@
     loop-fade 7s var(--loop-exit) infinite,
     loop-wipe 7s var(--loop-enter) infinite;
   animation-play-state: var(--loop-state, running);
+  animation-delay: var(--loop-delay, 0s);
 }
 
 @utility loop-unwipe {
   animation: loop-unwipe 7s var(--loop-enter) infinite;
   animation-play-state: var(--loop-state, running);
+  animation-delay: var(--loop-delay, 0s);
+}
+
+/*
+ * The reverse of an entry: shown from the start of the cycle, hidden from its entry point on
+ * (a terminal's typing cursor, gone once the command runs). Hidden in the final frame.
+ */
+@utility loop-out {
+  opacity: 0;
+  animation: loop-hide 7s var(--loop-enter) infinite;
+  animation-play-state: var(--loop-state, running);
+  animation-delay: var(--loop-delay, 0s);
+}
+
+/*
+ * A planned project's screen (InDevScreen), timed by `loopProgress()`: the built part is a
+ * loop-wipe box, the cursor riding its edge a loop-slide box. --loop-delay (`loopPhase()`)
+ * starts a screen part-way through its cycle, so planned cards side by side aren't in step.
+ */
+
+/* Moves like a loop-wipe box without clipping, so a marker can ride the edge of the reveal; fades in at the start of the cycle. */
+@utility loop-slide {
+  animation:
+    loop-fade 7s var(--loop-fade) infinite,
+    loop-wipe 7s var(--loop-enter) infinite;
+  animation-play-state: var(--loop-state, running);
+  animation-delay: var(--loop-delay, 0s);
+}
+
+@keyframes loop-press {
+  from {
+    scale: 1;
+  }
+  to {
+    scale: 0.86;
+  }
+}
+
+/* Pressed while --loop-press is 1: a cursor holding on to what it drags. */
+@utility loop-press {
+  animation: loop-press 7s var(--loop-press) infinite;
+  animation-play-state: var(--loop-state, running);
+  animation-delay: var(--loop-delay, 0s);
+}
+
+/*
+ * A screen drawn as its own blueprint: text becomes bars (a thick line-through over clear
+ * glyphs), and borders, fills and chart lines become dashed or hairline outlines. Layout is
+ * untouched, so it lines up exactly with the same screen drawn normally. The screens give
+ * fills only through `bg-*` classes, hence the attribute match. `!important`: it has to beat
+ * each screen's own colour, border and fill utilities, whatever their order in the stylesheet.
+ */
+@utility wireframe {
+  & * {
+    color: transparent !important;
+    text-decoration-line: line-through !important;
+    text-decoration-color: var(--border) !important;
+    text-decoration-thickness: 0.7em !important;
+    border-style: dashed !important;
+    border-color: var(--line) !important;
+  }
+
+  & [class*="bg-"] {
+    background: none !important;
+    outline: 1px dashed var(--line);
+    outline-offset: -1px;
+  }
+
+  & svg * {
+    stroke: var(--line) !important;
+  }
 }
 
 /* ---------------------------------------------------------------------------

@@ -25,6 +25,11 @@ Read `design_handoff_portfolio/README.md` for the full spec. `Portfolio.dc.html`
 | Content | Case studies are typed TypeScript data (`content/work.ts`). Notes are MDX (`content/notes/*.mdx`). |
 | Routing | Real routes replace the prototype's hash routes. |
 | Copy | Keep the mock content (Northwind, metrics, links) until real details arrive. Keep it in data/MDX only, never in components. |
+| Live and planned projects | /work lists every project. Only `status: "live"` ones have a case-study page; `planned` ones (the five mock projects) show as cards that don't open, with "In the works" instead of the year and no stat line, and their routes 404. A real project's write-up comes only from its own README: nothing invented, so a section the README can't support is left out (devsweep has no "What I'd do differently"). |
+| Case-study links | A case study can list off-site links (repository, package) under the statement, in the mono meta style. Not in the design handoff; added for devsweep (owner approved). |
+| Project icons | Each screen's title bar shows the project's own icon (a Lucide glyph on a 1.4em ink tile) instead of the handoff's plain 1.1em ink square. Owner requested. |
+| Planned project screens | A planned project's card shows its screen still being built rather than finished: its own UI up to a build edge, the same screen as a dashed blueprint past it, and a cursor tagged "in dev" dragging the edge across in fits and starts (with one revert), never reaching the end. A progress bar replaces the title bar's meta. Each planned card starts at a different point in the cycle. Not in the design handoff; owner requested. |
+| devsweep screen | Replays devsweep's own README demo rather than a generic list: typed command, the DEVSWEEP banner sweeping in over its starfield, then the report printed a line at a time, all on stepped (terminal) timing. It follows the site theme rather than the demo's dark terminal; the terminal text is .75em so all 36 lines fit the frame. Owner requested. |
 
 ## Dependencies
 
@@ -295,6 +300,44 @@ Every phase ends with these checks:
 | `components/page-header.tsx` | Below 480px only the name shows: "/ Section" repeats the back pill and ran under the toggle at 375px. Truncation stays as a fallback for very narrow screens |
 
 - **New route checklist** (addition): give the page's `<main>` `id="main"` for the skip link.
+
+### Projects: /work live, devsweep
+
+- [x] `workPublished` on: /work and the home "Selected work" tile link again (the cooking teaser stays for when it's off).
+- [x] Live/planned split: only live projects get a page, an Open Graph card and a sitemap entry; planned cards don't open.
+- [x] devsweep case study, written only from its README: meta, statement, GitHub and npm links, sections 01–06 (no retrospective), stack.
+- [x] devsweep hero screen: the README's sample scan as an animated terminal.
+- [x] Next-project card falls back to "All projects → /work" while devsweep is the only live project.
+- [x] devsweep screen replays its README demo: the command types in key by key behind a cursor, the DEVSWEEP banner sweeps in, the report prints line by line, the prompt returns.
+- [x] Project icons in every screen's title bar, one per project.
+- [x] Case studies open instantly from /work and from the next-project card, and keep their complete static HTML. This cleared the dev overlay's "URL data outside of Suspense" insight.
+- [x] Planned projects' screens animate as still in development: half built, with an "in dev" cursor dragging the build edge and a progress bar in the title bar (see Decisions).
+
+#### Code map and conventions (projects)
+
+| Path | Holds |
+|---|---|
+| `lib/work.ts` | `CaseStudyStatus` (`live` / `planned`), `CaseStudyLink`; `links?` and optional `different` on `CaseStudy`; `plannedLabel` on `WorkIndex`. Accessors: `getCaseStudies()` (all, for /work), `getLiveCaseStudies()`, `isCaseStudyLive()`, `getCaseStudy(slug)` (live only), `getFeaturedCaseStudy()` (home tile screen), `getNextCaseStudy(slug)` (next live one, `undefined` when it's the only one) |
+| `content/work.ts` | devsweep first (live), then the five mock projects (planned) |
+| `components/work/screens/devsweep-screen.tsx` | Terminal screen, timed like devsweep's README demo (`assets/demo.svg`): at `~/vulnerable-repo $` the command types in one key per step with a cursor riding its edge (`loop-out` hides it at Enter), then the banner, the tagline, the report a line at a time (`loopSteps`, exact columns with `whitespace-pre`) and the prompt again. `●` is an SVG circle (Geist Mono lacks it). Severity colours follow devsweep's own (bold red, red, yellow, cyan) through the nearest tokens: `sk-ai`, `sk-ai`, `sk-in`, `sk-be`; its cyan prompt is `sk-be` |
+| `components/work/screens/devsweep-banner.tsx` | `DevsweepBanner`: devsweep's `src/ui/banner.ts` ported. The ANSI Shadow letters are SVG shapes on the character grid (6×12 units = 1ch × 1lh at line height 1.2), shaded `ink` → `sub` from the top left, with `sub` shadow strokes. The starfield uses devsweep's own seed and placement. The word sweeps in over 20 stepped frames (`loop-wipe`) with a glow on its leading edge |
+| `components/icons.tsx` | Also the project glyphs (Lucide, inlined): `BroomIcon` (devsweep), `SendIcon` (Relay), `FileSearchIcon` (Ledgerlens), `WorkflowIcon` (Flowpilot), `BinocularsIcon` (Scout), `ActivityIcon` (Pulse). `IconProps` is exported |
+| `components/work/project-screen.tsx` | The `screens` registry holds each project's `Icon` beside its name, meta and body; the title bar draws it on an ink tile |
+| `lib/loop-timing.ts` | `loopSteps(at, length?, steps?)`: stepped timing for terminal output, like `steps(n, jump-end)`. With the defaults an element pops in at `at`; typing uses one step per character |
+| `app/globals.css` | `loop-out`: shown from the start of the cycle, hidden from its entry point on, and hidden in the final frame |
+| `components/work/work-card.tsx` | Live: link with hover, year and stat line, and `prefetch` (the whole case study, not just the shared App Shell). Planned: plain block, `plannedLabel`, no stats, no hover |
+| `components/next-card.tsx` | Prefetches its whole target page: it's the likely next click, and every target is static |
+| `app/work/[slug]/page.tsx` | Sections are built as a list (`caseSections`), so section numbers and route-enter steps close up when an optional section is missing; links row under the statement. `instant = false`: see below |
+| `lib/structured-data.ts` | `caseStudyJsonLd` adds the links as `sameAs` |
+| `components/work/in-dev-screen.tsx` | `InDevScreen`: a planned project's screen body, drawn twice: once under `wireframe` (the blueprint), once in a `loop-wipe` box uncovered up to the build edge, with the edge, its glow and the "in dev" cursor in a `loop-slide` box. Also exports `inDevBuild` (the build's timing, shared with the title bar's progress bar) and `inDevPhase(slug)` (spreads planned cards across the cycle) |
+| `components/work/project-screen.tsx` | `status` prop (default `live`): `planned` wraps the body in `InDevScreen` and swaps the title bar's meta for the progress bar. `WorkCard` and the home tile pass the project's status |
+| `lib/loop-timing.ts` | `loopProgress(moves)`: progress that moves in eased steps and holds between them (it may go back), plus `--loop-press` (1 during a move) and `--loop-final` (the reduced-motion frame). `loopPhase(phase)`: sets `--loop-delay` to start the loops part-way through the cycle |
+| `app/globals.css` | Every `loop-*` utility reads `--loop-delay`. New: `loop-slide` (moves like `loop-wipe`, no clipping, fades in with `--loop-fade`), `loop-press` (cursor press), `wireframe` (a screen as its blueprint: text as `border`-coloured bars via a thick line-through, borders and fills as dashed `line` outlines; `!important` so it beats each screen's own utilities) |
+| `components/icons.tsx` | `PointerIcon` (Lucide "mouse-pointer-2"): the build cursor |
+| `lib/work.ts`, `content/work.ts` | `buildLabel` on `WorkIndex`: the cursor's tag ("in dev") |
+
+- **To add a project:** add its slug to `CaseStudySlug`, draw its screen in `components/work/screens/`, add its glyph to `components/icons.tsx` and register both in `project-screen.tsx`, then add its entry to `content/work.ts`. Use `status: "planned"` until it's built and written up; flipping it to `live` gives it a page, an Open Graph card and a sitemap entry. While it's planned, its card draws that same screen half built (`InDevScreen`), so there's nothing extra to draw. The `wireframe` blueprint expects fills as `bg-*` classes.
+- **Instant navigation on `[slug]` pages:** links into a route share one App Shell (Partial Prefetching), and it can't include anything that reads `params`. The dev overlay therefore suggests `<Suspense>` around the page. Don't follow that suggestion here. React then sends the article as a hidden `<div>` that an inline script reveals on the next frame. So with JavaScript off, only the page header shows, which breaks "content visible in the server HTML". Instead the page sets `instant = false`, and the links into it use `prefetch`. The pages are static, so the prefetch is served from the build with no server work. Checked: after /work prefetches, a click opens the full case study with the network offline. `/notes/[num]` has the same shape and will show the same insight once notes are published; give it the same treatment, plus `prefetch` on the /notes list links.
 
 ## Later
 

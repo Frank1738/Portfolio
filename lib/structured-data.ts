@@ -59,6 +59,7 @@ export function caseStudyJsonLd(study: CaseStudy): JsonLdNode {
     image: cardImage(path),
     dateCreated: String(study.year),
     keywords: study.stack.join(", "),
+    ...(study.links && { sameAs: study.links.map((link) => link.href) }),
     inLanguage: "en",
     creator: personRef,
     author: personRef,

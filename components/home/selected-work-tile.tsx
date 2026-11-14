@@ -6,9 +6,9 @@ import { tileVariants } from "@/components/tile";
 import { ProjectScreen } from "@/components/work/project-screen";
 import { padCount } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import { getCaseStudies, getWorkTeaser, isWorkPublished } from "@/lib/work";
+import { getCaseStudies, getFeaturedCaseStudy, getWorkTeaser, isWorkPublished } from "@/lib/work";
 
-/** Full-width tile with the Relay screen; leads to /work, or teases it while unpublished. */
+/** Full-width tile with the featured project's screen; leads to /work, or teases it (Relay screen) while unpublished. */
 export function SelectedWorkTile({ className }: { className?: string }) {
   if (!isWorkPublished()) {
     const teaser = getWorkTeaser();
@@ -33,6 +33,8 @@ export function SelectedWorkTile({ className }: { className?: string }) {
     );
   }
 
+  const featured = getFeaturedCaseStudy();
+
   return (
     <Link href="/work" data-skel="16" className={cn(tileVariants({ pressable: true }), "col-span-full gap-3.5", className)}>
       <TileHeader>
@@ -51,7 +53,7 @@ export function SelectedWorkTile({ className }: { className?: string }) {
           SELECTED WORK
         </span>
         <div className="size-full transition-transform duration-240 ease-zoom group-hover/tile:scale-[1.015]">
-          <ProjectScreen kind="relay" />
+          <ProjectScreen kind={featured.slug} status={featured.status} />
         </div>
       </div>
     </Link>

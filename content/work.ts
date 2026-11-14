@@ -4,15 +4,17 @@ import type { CaseStudy, WorkIndex, WorkTeaser } from "@/lib/work";
 export const workIndex: WorkIndex = {
   title: "Selected work",
   description:
-    "8 years building AI products end to end, from the first prototype and evals to the interface and the on-call rota. Five recent ones, each with a full write-up.",
+    "Things I've shipped and things I'm building. The shipped ones open into a full write-up; the rest are still in the works.",
+  plannedLabel: "In the works",
+  buildLabel: "in dev",
 };
 
 /**
- * Off while the case studies below are still mock data: /work and /work/[slug] return 404,
- * they drop out of the sitemap, and the home tile shows the teaser instead of linking.
- * Set to true once real case studies are in.
+ * Master switch for /work. While false, /work and /work/[slug] return 404, they drop out of
+ * the sitemap, and the home tile shows the teaser instead of linking. Each project's own
+ * `status` decides whether it has a page.
  */
-export const workPublished = false;
+export const workPublished = true;
 
 /** Home tile copy while work is unpublished. Each tap on the screen shows the next line. */
 export const workTeaser: WorkTeaser = {
@@ -27,12 +29,72 @@ export const workTeaser: WorkTeaser = {
 };
 
 /**
- * Case studies in display order (also the "Next project" order; the last loops to the first).
- * All names, numbers and links are mock data from the design handoff.
+ * Projects in display order (live ones also give the "Next project" order, looping).
+ * devsweep's write-up comes only from its README. The planned projects' names, numbers and
+ * links are mock data from the design handoff; replace them when each one is built.
  */
 export const caseStudies: CaseStudy[] = [
   {
+    slug: "devsweep",
+    status: "live",
+    title: "devsweep",
+    year: 2026,
+    org: "Open source",
+    period: "2026",
+    statement: "Scans your dev setup and repos for the supply-chain and credential risks that infostealers exploit.",
+    links: [
+      { label: "GitHub", href: "https://github.com/Frank1738/devsweep" },
+      { label: "npm", href: "https://www.npmjs.com/package/@frank1738/devsweep" },
+    ],
+    blurb:
+      "Finds the settings that would let a stolen token or a hijacked action do real damage, and tells you how to fix each one.",
+    stats: ["8 rules", "0 dependencies", "CLI + GitHub Action"],
+    problem:
+      "Attackers often skip a project's code and go after something it trusts: a GitHub Action it uses, its release workflow, or a maintainer's access token. That's a supply-chain attack, and one common way tokens get stolen is infostealers: malware that copies saved passwords and tokens off developers' computers. How much damage a stolen token or a hijacked action can do comes down to settings: actions that could be swapped for different code, workflows that run strangers' pull request code with secrets, tokens with more access than they need, and branches and tags that can be force-pushed.",
+    built: [
+      "A command-line tool you run with npx @frank1738/devsweep in a repository. It checks the GitHub Actions workflows and the repository's settings on GitHub, then lists every finding by file: its severity, the line, what's wrong and what it's about. Add --details to see why each one is a risk, the lines of code involved and how to fix it.",
+      "It runs on your own machine or in CI as a GitHub Action, which prints the readable report in the job log and writes SARIF, the format GitHub's Security tab reads, so findings show up in code scanning and on pull requests. Findings you've reviewed and decided to keep are recorded in devsweep.config.json, each with a reason.",
+    ],
+    architecture: {
+      steps: [
+        { name: "Folder to scan", detail: "CLI or GitHub Action" },
+        { name: "Read inputs", detail: "workflow YAML + GitHub API" },
+        { name: "8 rules", detail: "6 workflow, 2 repository" },
+        { name: "Config", detail: "devsweep.config.json, optional" },
+      ],
+      outcomes: [
+        { name: "Report + exit code", detail: "0 pass, 1 findings, 2 error" },
+        { name: "JSON or SARIF", detail: "scripts, GitHub's Security tab" },
+      ],
+    },
+    decisions: [
+      {
+        title: "No dependencies to install",
+        body: "The npm package has no dependencies. devsweep and the three libraries it uses (commander, picocolors and yaml) are bundled into plain JavaScript files. They aren't minified, so you can read exactly what runs.",
+      },
+      {
+        title: "No --token flag",
+        body: "The repository checks read a token only from the GITHUB_TOKEN or GH_TOKEN environment variable. There's deliberately no flag for it, because command lines end up in shell history and process lists. The token is never printed.",
+      },
+      {
+        title: "A release needs a signed tag and 2FA",
+        body: "Releases come only from a signed, annotated tag. The release workflow checks it, runs the tests and stages the version on npm through trusted publishing, with provenance, so no npm token is stored anywhere. A maintainer then approves it with two-factor authentication: a compromised workflow can stage a release, but it can't publish one.",
+      },
+      {
+        title: "Every exception needs a reason",
+        body: "Reviewed findings are accepted in devsweep.config.json, matched on rule, file and subject, never on line numbers, which move. Each acceptance needs a reason, and one that stops matching anything shows up as a warning, so stale exceptions get cleaned up.",
+      },
+    ],
+    results: [
+      { value: "8", label: "rules: 6 for workflows, 2 for repository settings" },
+      { value: "0", label: "dependencies in the npm package" },
+      { value: "3", label: "report formats: readable, JSON and SARIF" },
+    ],
+    stack: ["TypeScript", "Node.js", "commander", "picocolors", "yaml", "Rolldown", "Vitest", "Biome", "GitHub Actions"],
+  },
+  {
     slug: "relay",
+    status: "planned",
     title: "Relay",
     year: 2026,
     org: "Northwind",
@@ -88,6 +150,7 @@ export const caseStudies: CaseStudy[] = [
   },
   {
     slug: "ledgerlens",
+    status: "planned",
     title: "Ledgerlens",
     year: 2025,
     org: "Northwind",
@@ -143,6 +206,7 @@ export const caseStudies: CaseStudy[] = [
   },
   {
     slug: "flowpilot",
+    status: "planned",
     title: "Flowpilot",
     year: 2025,
     org: "Brightline Logistics",
@@ -198,6 +262,7 @@ export const caseStudies: CaseStudy[] = [
   },
   {
     slug: "scout",
+    status: "planned",
     title: "Scout",
     year: 2024,
     org: "Side project",
@@ -252,6 +317,7 @@ export const caseStudies: CaseStudy[] = [
   },
   {
     slug: "pulse",
+    status: "planned",
     title: "Pulse",
     year: 2024,
     org: "Northwind",
