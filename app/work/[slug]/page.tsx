@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 
 import { ExternalLink } from "@/components/external-link";
@@ -23,6 +24,7 @@ import {
   getWorkIndex,
   isWorkPublished,
   type CaseStudy,
+  type CaseStudyScreen,
 } from "@/lib/work";
 
 /** Route-enter index of the first numbered section (header, meta, title, statement and hero come first). */
@@ -147,6 +149,7 @@ function caseSections(study: CaseStudy): Section[] {
         </p>
       )),
     },
+    ...(study.screens ? [{ title: "Screens", className: "gap-4", content: <Screens screens={study.screens} /> }] : []),
     { title: "Architecture", className: "gap-4", content: <ArchitectureFlow {...study.architecture} /> },
     {
       title: "Key decisions",
@@ -201,4 +204,34 @@ function caseSections(study: CaseStudy): Section[] {
       ),
     },
   ];
+}
+
+/**
+ * Real screenshots in a two-column grid: a landscape shot spans both columns, portrait (phone)
+ * shots sit side by side. Each is a figure with its caption in the mono meta style.
+ */
+function Screens({ screens }: { screens: CaseStudyScreen[] }) {
+  return (
+    <ul className="grid grid-cols-2 gap-4">
+      {screens.map((screen) => {
+        const landscape = screen.image.width > screen.image.height;
+        return (
+          <li key={screen.image.src} className={cn(landscape && "col-span-2")}>
+            <figure className="flex flex-col gap-2">
+              <div className="overflow-hidden rounded-lg border border-border bg-tile">
+                <Image
+                  src={screen.image}
+                  alt={screen.alt}
+                  placeholder="blur"
+                  sizes={landscape ? "(min-width: 640px) 560px, 100vw" : "(min-width: 640px) 272px, 50vw"}
+                  className="block w-full"
+                />
+              </div>
+              <figcaption className="font-mono text-2xs text-sub">{screen.caption}</figcaption>
+            </figure>
+          </li>
+        );
+      })}
+    </ul>
+  );
 }

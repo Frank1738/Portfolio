@@ -1,3 +1,5 @@
+import type { StaticImageData } from "next/image";
+
 import { caseStudies, workIndex, workPublished, workTeaser } from "@/content/work";
 
 /** A box in the architecture flow: name on the left, mono detail on the right. */
@@ -7,7 +9,7 @@ export type ArchitectureNode = {
 };
 
 /** One per case study; also selects the animated product screen. */
-export type CaseStudySlug = "devsweep" | "relay" | "ledgerlens" | "flowpilot" | "scout" | "pulse";
+export type CaseStudySlug = "sentoff" | "devsweep" | "relay" | "ledgerlens" | "flowpilot" | "scout" | "pulse";
 
 /**
  * `live`: built, with a case-study page. `planned`: not built yet, so its card on /work doesn't
@@ -19,6 +21,13 @@ export type CaseStudyStatus = "live" | "planned";
 export type CaseStudyLink = {
   label: string;
   href: string;
+};
+
+/** A real screenshot in a case study's "Screens" section: a static import, so Next knows its size. */
+export type CaseStudyScreen = {
+  image: StaticImageData;
+  alt: string;
+  caption: string;
 };
 
 export type CaseStudy = {
@@ -40,6 +49,8 @@ export type CaseStudy = {
   stats: string[];
   problem: string;
   built: string[];
+  /** Real screenshots, shown after "What I built". Optional: a project drawn as a mock-up has none. */
+  screens?: CaseStudyScreen[];
   architecture: {
     steps: ArchitectureNode[];
     /** [accent outcome, neutral outcome] */

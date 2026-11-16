@@ -121,3 +121,12 @@ export function ActivityIcon(props: IconProps) {
     </Icon>
   );
 }
+
+/** Sent Off's red card, in Lucide's stroke style: tilted like one just shown. */
+export function RedCardIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <rect width="12" height="18" x="6" y="3" rx="2" transform="rotate(-12 12 12)" />
+    </Icon>
+  );
+}

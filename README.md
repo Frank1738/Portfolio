@@ -19,6 +19,7 @@ npx tsc --noEmit
 | Name, role, email, links, domain | `lib/site.ts` |
 | Home intro, stack, services | `content/home.ts` |
 | Case studies | `content/work.ts` |
+| Project screenshots | `assets/images/<slug>/`, static-imported from `content/work.ts` |
 | Notes | `content/notes/000N.mdx`, registered in `lib/notes.ts` |
 | Colours, type scale, motion | `app/globals.css` |
 

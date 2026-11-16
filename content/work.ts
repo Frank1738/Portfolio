@@ -1,3 +1,6 @@
+import sentoffHomeDesktop from "@/assets/images/sentoff/home-desktop.png";
+import sentoffHomePhone from "@/assets/images/sentoff/home-phone.png";
+import sentoffLeaguePhone from "@/assets/images/sentoff/league-phone.png";
 import type { CaseStudy, WorkIndex, WorkTeaser } from "@/lib/work";
 
 /** The /work page heading and description. */
@@ -30,10 +33,85 @@ export const workTeaser: WorkTeaser = {
 
 /**
  * Projects in display order (live ones also give the "Next project" order, looping).
- * devsweep's write-up comes only from its README. The planned projects' names, numbers and
- * links are mock data from the design handoff; replace them when each one is built.
+ * Sent Off's and devsweep's write-ups come only from their READMEs. The planned projects' names,
+ * numbers and links are mock data from the design handoff; replace them when each one is built.
  */
 export const caseStudies: CaseStudy[] = [
+  {
+    slug: "sentoff",
+    status: "live",
+    title: "Sent Off",
+    year: 2026,
+    org: "Side project",
+    period: "Nov 2026",
+    statement: "Every manager in your Fantasy Premier League mini-league, rated out of 10 and roasted with their own numbers.",
+    links: [
+      { label: "sentoff.lol", href: "https://www.sentoff.lol" },
+      { label: "GitHub", href: "https://github.com/Frank1738/sentoff" },
+    ],
+    blurb:
+      "Paste a Fantasy Premier League mini-league ID and get a match report for the group chat: a rating, a card and a roast for every manager.",
+    stats: ["11 rules", "20 managers a league", "Built in a weekend"],
+    problem:
+      "A Fantasy Premier League mini-league lives in its group chat, and the chat runs on regret: points left on the bench, the captain who blanked, the player sold the week before he hauled. The data behind all of that is public in the FPL API, with no login. The tools that turn it into banter are paid, per-league subscriptions. Nothing was free, one-shot and funny, so I built that over a weekend.",
+    built: [
+      "A site where you paste a league ID, a league URL or your team ID and get a match report: the table, four league awards (Golden Boot of Shame, Red Card, Benchwarmer of the Year, Wooden Spoon), then a card for every manager with a rating out of ten, a red or yellow card, a title like The Captaincy Criminal, the roast and the facts behind it. Each card copies as text or shares as a portrait image sized for the chat, and a link reports a roast that lands wrong.",
+      "Under it, eleven rules written in code read every manager's season from the FPL API: bench points, captain blanks, hits, panic sales, wasted chips and so on. Each gives a fact with a sting from 0 to 100, ranked against the rest of the league. The top facts go to a language model, which only writes the joke. Every number in its reply is checked against the facts it was given, and a template line replaces anything that fails. Reports are cached until the next deadline, so a league costs one build per gameweek.",
+    ],
+    screens: [
+      {
+        image: sentoffHomeDesktop,
+        alt: "Sent Off's home page: the headline \"Every manager in your mini-league, rated.\", one input for a league ID, league URL or team ID, a \"Roast the league\" button, and two sample cards: Sam, 7 out of 10, Man of the match; Dave, 4 out of 10, The Bench Warmer, with a yellow card.",
+        caption: "Home: one input, two sample cards.",
+      },
+      {
+        image: sentoffLeaguePhone,
+        alt: "The match report for Cornwall Champions after gameweek 10 on a phone: the table with rank arrows and points, then the awards: Golden Boot of Shame, Red Card and Benchwarmer of the Year.",
+        caption: "Match report on a phone: table, then awards.",
+      },
+      {
+        image: sentoffHomePhone,
+        alt: "Sent Off's home page on a phone: the headline, the input, the \"Roast the league\" button, a demo link and where to find your league ID.",
+        caption: "Home on a phone.",
+      },
+    ],
+    architecture: {
+      steps: [
+        { name: "League ID or URL", detail: "parsed to a number, nothing else" },
+        { name: "FPL API", detail: "4 at a time, retry on 429 and 5xx" },
+        { name: "11 fact rules", detail: "pure functions, sting 0–100, ranked" },
+        { name: "Writer + checks", detail: "Groq or Claude Haiku, 25–40 words" },
+      ],
+      outcomes: [
+        { name: "Match report", detail: "Redis, until the next deadline" },
+        { name: "Share image", detail: "1080×1350 PNG, next/og" },
+      ],
+    },
+    decisions: [
+      {
+        title: "Facts in code, jokes from the model",
+        body: "The model never sees raw FPL data or picks what to mock. The rules compute every fact deterministically, rank them across the league and pass the top three as JSON. That keeps the roasts true, testable against a fixture league, and cheap: one short call per manager.",
+      },
+      {
+        title: "Every number is checked",
+        body: "A roast is rejected if it's outside 25 to 40 words, contains a banned word or a link, or uses a number that wasn't in the facts sent. A rejected roast becomes a template line built from the same fact, so a league always gets a full set of cards and the model can't invent a stat about a real person.",
+      },
+      {
+        title: "Fully usable with no keys",
+        body: "Without a Groq or Anthropic key every roast is a template line, and without a Redis URL the cache is an in-memory map with the same expiries. Tests and local dev need nothing installed, and if the writer's daily cap is hit, the app stays up.",
+      },
+      {
+        title: "Stream in three phases, not card by card",
+        body: "Sting is ranked across the league, so no card is final until every manager is read. The page shows the table straight after the standings call, a \"Reading 14 of 20\" counter while the manager data comes in, then cards as each roast lands. Cold builds are rate limited per IP and globally, so Sent Off never looks like a scraper to FPL.",
+      },
+    ],
+    results: [
+      { value: "11", label: "rules, one file each, with its definition beside it" },
+      { value: "20", label: "managers rated per league, about 300 FPL requests" },
+      { value: "91", label: "tests, none of them touching the network" },
+    ],
+    stack: ["TypeScript", "Next.js", "React", "Tailwind CSS", "Vitest", "Anthropic SDK", "Groq", "Upstash Redis", "Vercel"],
+  },
   {
     slug: "devsweep",
     status: "live",

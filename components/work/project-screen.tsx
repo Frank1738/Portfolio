@@ -3,6 +3,7 @@ import {
   BinocularsIcon,
   BroomIcon,
   FileSearchIcon,
+  RedCardIcon,
   SendIcon,
   WorkflowIcon,
   type IconProps,
@@ -15,6 +16,7 @@ import { LedgerlensScreen } from "@/components/work/screens/ledgerlens-screen";
 import { PulseScreen } from "@/components/work/screens/pulse-screen";
 import { RelayScreen } from "@/components/work/screens/relay-screen";
 import { ScoutScreen } from "@/components/work/screens/scout-screen";
+import { SentoffScreen } from "@/components/work/screens/sentoff-screen";
 import { cn } from "@/lib/utils";
 import type { CaseStudySlug, CaseStudyStatus } from "@/lib/work";
 
@@ -32,6 +34,7 @@ type ProjectScreenProps = {
 };
 
 const screens = {
+  sentoff: { name: "Sent Off", meta: "League 1500 · GW10", Icon: RedCardIcon, Body: SentoffScreen },
   devsweep: { name: "devsweep", meta: "Terminal", Icon: BroomIcon, Body: DevsweepScreen },
   relay: { name: "Relay", meta: "Inbox · 128 open", Icon: SendIcon, Body: RelayScreen },
   ledgerlens: { name: "Ledgerlens", meta: "40,214 docs", Icon: FileSearchIcon, Body: LedgerlensScreen },
@@ -45,7 +48,7 @@ const screens = {
 
 /**
  * A 16:9 mock product window drawn in HTML/CSS, playing a 7s CSS loop (paused off-screen,
- * final frame under reduced motion). Everything inside is sized in `em` against an
+ * final frame under reduced motion), or holding a real screenshot (Sent Off). Everything inside is sized in `em` against an
  * inline-size container (font-size 84cqw / 70 = 1.2cqw), so the UI scales with the frame.
  */
 export function ProjectScreen({ kind, status = "live", label, className }: ProjectScreenProps) {
