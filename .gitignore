@@ -42,3 +42,7 @@ next-env.d.ts
 
 # portfolio design handoff (local reference only)
 /design_handoff_portfolio/
+
+# agent instructions and planning docs (local only)
+/AGENTS.md
+/docs/

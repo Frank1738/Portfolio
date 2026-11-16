@@ -1,8 +1,18 @@
 # Portfolio
 
-A personal portfolio: a home page, case studies (`/work`) and Matchday notes (`/notes`). Built with Next.js 16.4 (App Router, Cache Components), React 19, Tailwind v4 and shadcn/ui. Every page is prerendered at build time.
+The personal site of Frankline Osoro, an AI fullstack engineer. It has a home page, case studies (`/work`) and Matchday notes (`/notes`).
 
-## Run it
+**Live site:** [frankline.dev](https://www.frankline.dev/)
+
+## Stack
+
+- **Next.js 16** with the App Router and Cache Components. Every page is prerendered at build time.
+- **React 19** and **TypeScript**
+- **Tailwind CSS v4** and **shadcn/ui**
+- **MDX** for the notes
+- Generated Open Graph images, sitemap, robots file and structured data
+
+## Run it locally
 
 ```bash
 npm install
@@ -12,19 +22,17 @@ npm run lint
 npx tsc --noEmit
 ```
 
-## Where things live
+## Project layout
 
 | What | Where |
 |---|---|
-| Name, role, email, links, domain | `lib/site.ts` |
+| Name, role, email, links | `lib/site.ts` |
 | Home intro, stack, services | `content/home.ts` |
 | Case studies | `content/work.ts` |
-| Project screenshots | `assets/images/<slug>/`, static-imported from `content/work.ts` |
+| Project screenshots | `assets/images/<slug>/` |
 | Notes | `content/notes/000N.mdx`, registered in `lib/notes.ts` |
 | Colours, type scale, motion | `app/globals.css` |
 
-`lib/site.ts` also sets the canonical URLs, sitemap, structured data and share images from the site URL: set `SITE_URL` (e.g. `https://franklineosoro.dev`) when deploying to a custom domain. On Vercel, the project's production URL is used until then. Case studies and notes are still mock data and switched off (`workPublished`, `notesPublished`).
+## Deploying
 
-## Working on it
-
-Read [docs/CODING_STANDARDS.md](docs/CODING_STANDARDS.md) and [docs/BUILD_PLAN.md](docs/BUILD_PLAN.md) first. The design handoff (`design_handoff_portfolio/`) is local only and git-ignored.
+The site is built for Vercel. Set `SITE_URL` (for example `https://www.frankline.dev`) when using a custom domain. Canonical URLs, the sitemap, structured data and share images all use it. Until it's set, the Vercel production URL is used.
