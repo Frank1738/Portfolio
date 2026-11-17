@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist_Mono } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 import { IntroScript } from "@/components/intro-script";
 import { ThemeScript } from "@/components/theme-script";
@@ -61,6 +62,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </a>
         {children}
       </body>
+      <GoogleAnalytics gaId="G-P9FPZC4825" />
     </html>
   );
 }

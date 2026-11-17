@@ -96,9 +96,12 @@ export function getWorkIndex(): WorkIndex {
   return workIndex;
 }
 
-/** Every project in display order, live and planned: the /work list. */
+/**
+ * The /work list and the home tile's project count. Planned projects are hidden for now:
+ * their content stays in content/work.ts, and setting one to `live` shows it again.
+ */
 export function getCaseStudies(): readonly CaseStudy[] {
-  return caseStudies;
+  return getLiveCaseStudies();
 }
 
 export function isCaseStudyLive(study: CaseStudy): boolean {
