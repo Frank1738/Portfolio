@@ -53,20 +53,8 @@ export function LockIcon(props: IconProps) {
 }
 
 /*
- * Project icons, one per case study (ProjectScreen's title bar).
+ * Glyphs for planned projects' title-bar marks (components/work/app-marks.tsx).
  */
-
-/** Lucide "brush-cleaning", inlined: devsweep's broom. */
-export function BroomIcon(props: IconProps) {
-  return (
-    <Icon {...props}>
-      <path d="m16 22-1-4" />
-      <path d="M19 13.99a1 1 0 0 0 1-1V12a2 2 0 0 0-2-2h-3a1 1 0 0 1-1-1V4a2 2 0 0 0-4 0v5a1 1 0 0 1-1 1H6a2 2 0 0 0-2 2v.99a1 1 0 0 0 1 1" />
-      <path d="M5 14h14l1.973 6.767A1 1 0 0 1 20 22H4a1 1 0 0 1-.973-1.233z" />
-      <path d="m8 22 1-4" />
-    </Icon>
-  );
-}
 
 /** Lucide "send", inlined: Relay sends the reply. */
 export function SendIcon(props: IconProps) {
@@ -124,11 +112,3 @@ export function ActivityIcon(props: IconProps) {
   );
 }
 
-/** Sent Off's red card, in Lucide's stroke style: tilted like one just shown. */
-export function RedCardIcon(props: IconProps) {
-  return (
-    <Icon {...props}>
-      <rect width="12" height="18" x="6" y="3" rx="2" transform="rotate(-12 12 12)" />
-    </Icon>
-  );
-}

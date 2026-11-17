@@ -1,15 +1,13 @@
 import {
   ActivityIcon,
   BinocularsIcon,
-  BroomIcon,
   FileSearchIcon,
   LockIcon,
-  RedCardIcon,
   SendIcon,
   WorkflowIcon,
-  type IconProps,
 } from "@/components/icons";
 import { PauseOffscreen } from "@/components/pause-offscreen";
+import { DevsweepMark, glyphMark, SentoffMark } from "@/components/work/app-marks";
 import { LockedScreen } from "@/components/work/locked-screen";
 import { DevsweepScreen } from "@/components/work/screens/devsweep-screen";
 import { FlowpilotScreen } from "@/components/work/screens/flowpilot-screen";
@@ -39,22 +37,22 @@ const screens = {
   sentoff: {
     name: "Sent Off",
     meta: "League 1500 · GW10",
-    Icon: RedCardIcon,
+    Mark: SentoffMark,
     Body: SentoffScreen,
     frame: "inset-x-[17%] top-1/2 -translate-y-1/2",
   },
-  devsweep: { name: "devsweep", meta: "Terminal", Icon: BroomIcon, Body: DevsweepScreen },
-  relay: { name: "Relay", meta: "Inbox · 128 open", Icon: SendIcon, Body: RelayScreen },
-  ledgerlens: { name: "Ledgerlens", meta: "40,214 docs", Icon: FileSearchIcon, Body: LedgerlensScreen },
-  flowpilot: { name: "Flowpilot", meta: "Run #8812", Icon: WorkflowIcon, Body: FlowpilotScreen },
-  scout: { name: "Scout", meta: "Gameweek 8", Icon: BinocularsIcon, Body: ScoutScreen },
-  pulse: { name: "Pulse", meta: "Last 7 days", Icon: ActivityIcon, Body: PulseScreen },
+  devsweep: { name: "devsweep", meta: "Terminal", Mark: DevsweepMark, Body: DevsweepScreen },
+  relay: { name: "Relay", meta: "Inbox · 128 open", Mark: glyphMark(SendIcon), Body: RelayScreen },
+  ledgerlens: { name: "Ledgerlens", meta: "40,214 docs", Mark: glyphMark(FileSearchIcon), Body: LedgerlensScreen },
+  flowpilot: { name: "Flowpilot", meta: "Run #8812", Mark: glyphMark(WorkflowIcon), Body: FlowpilotScreen },
+  scout: { name: "Scout", meta: "Gameweek 8", Mark: glyphMark(BinocularsIcon), Body: ScoutScreen },
+  pulse: { name: "Pulse", meta: "Last 7 days", Mark: glyphMark(ActivityIcon), Body: PulseScreen },
 } satisfies Record<
   CaseStudySlug,
   {
     name: string;
     meta: string;
-    Icon: (props: IconProps) => React.ReactNode;
+    Mark: () => React.ReactNode;
     Body: () => React.ReactNode;
     /** Window position override; defaults to `inset-x-[8%] top-[9%]`. */
     frame?: string;
@@ -68,7 +66,7 @@ const screens = {
  */
 export function ProjectScreen({ kind, status = "live", label, className }: ProjectScreenProps) {
   const screen = screens[kind];
-  const { name, meta, Icon, Body } = screen;
+  const { name, meta, Mark, Body } = screen;
   const frame = "frame" in screen ? screen.frame : "inset-x-[8%] top-[9%]";
   const a11y = label ? { role: "img", "aria-label": label } : { "aria-hidden": true };
   const locked = status === "planned";
@@ -86,10 +84,7 @@ export function ProjectScreen({ kind, status = "live", label, className }: Proje
       >
         <div className="flex items-center justify-between border-b border-border px-[1.4em] py-[1em]">
           <div className="flex items-center gap-[.7em]">
-            {/* The project's app icon: its glyph on an ink tile. */}
-            <span className="grid size-[1.4em] place-items-center rounded-[.35em] bg-ink text-bg">
-              <Icon className="size-[1em]" strokeWidth={2.25} />
-            </span>
+            <Mark />
             <span className="text-[1.15em] font-medium text-ink">{name}</span>
           </div>
           {locked ? (
