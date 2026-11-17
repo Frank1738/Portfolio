@@ -39,7 +39,7 @@ const screens = {
     meta: "League 1500 · GW10",
     Mark: SentoffMark,
     Body: SentoffScreen,
-    frame: "inset-x-[17%] top-1/2 -translate-y-1/2",
+    frame: "inset-x-[13%] top-1/2 -translate-y-1/2",
   },
   devsweep: { name: "devsweep", meta: "Terminal", Mark: DevsweepMark, Body: DevsweepScreen },
   relay: { name: "Relay", meta: "Inbox · 128 open", Mark: glyphMark(SendIcon), Body: RelayScreen },

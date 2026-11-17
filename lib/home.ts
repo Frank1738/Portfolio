@@ -11,10 +11,34 @@ export type IntroParagraph = {
   parts: IntroPart[];
 };
 
-export type StackRow = {
-  label: string;
-  /** One chip each, so recruiters can scan single keywords. */
-  items: string[];
+/** Logos drawn by `StackIcon` (components/home/stack-icon.tsx). */
+export type StackIconKey =
+  | "openai"
+  | "anthropic"
+  | "mcp"
+  | "typescript"
+  | "react"
+  | "nextjs"
+  | "redux"
+  | "tailwind"
+  | "nodejs"
+  | "express"
+  | "postgresql"
+  | "prisma"
+  | "mongodb"
+  | "rest"
+  | "oauth"
+  | "jwt"
+  | "docker"
+  | "githubActions"
+  | "cicd"
+  | "jest"
+  | "cypress";
+
+/** One chip in "The stack", so recruiters can scan single keywords. */
+export type StackItem = {
+  name: string;
+  icon: StackIconKey;
 };
 
 /** A "Work with me" row: a mailto link with the subject pre-filled. */
@@ -28,7 +52,7 @@ export function getIntro(): readonly IntroParagraph[] {
   return intro;
 }
 
-export function getStack(): readonly StackRow[] {
+export function getStack(): readonly StackItem[] {
   return stack;
 }
 

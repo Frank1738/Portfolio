@@ -1,4 +1,4 @@
-import type { IntroParagraph, Service, StackRow } from "@/lib/home";
+import type { IntroParagraph, Service, StackItem } from "@/lib/home";
 
 /** Home page copy. Duelbits is the only company named, by choice. */
 
@@ -23,14 +23,28 @@ export const intro: IntroParagraph[] = [
   },
 ];
 
-export const stack: StackRow[] = [
-  {
-    label: "AI",
-    items: ["OpenAI API", "Anthropic (Claude) API", "LLM integrations", "AI-powered UIs"],
-  },
-  { label: "Frontend", items: ["TypeScript", "React", "Next.js", "Redux", "Tailwind CSS"] },
-  { label: "Backend", items: ["Node.js", "Express", "PostgreSQL", "MongoDB", "REST APIs"] },
-  { label: "Tooling", items: ["Docker", "GitHub Actions", "CI/CD", "Jest", "Cypress"] },
+export const stack: StackItem[] = [
+  { name: "TypeScript", icon: "typescript" },
+  { name: "React", icon: "react" },
+  { name: "Next.js", icon: "nextjs" },
+  { name: "Redux", icon: "redux" },
+  { name: "Tailwind CSS", icon: "tailwind" },
+  { name: "Node.js", icon: "nodejs" },
+  { name: "Express", icon: "express" },
+  { name: "PostgreSQL", icon: "postgresql" },
+  { name: "Prisma", icon: "prisma" },
+  { name: "MongoDB", icon: "mongodb" },
+  { name: "REST APIs", icon: "rest" },
+  { name: "OAuth", icon: "oauth" },
+  { name: "JWT", icon: "jwt" },
+  { name: "OpenAI API", icon: "openai" },
+  { name: "Claude API", icon: "anthropic" },
+  { name: "MCP", icon: "mcp" },
+  { name: "Docker", icon: "docker" },
+  { name: "GitHub Actions", icon: "githubActions" },
+  { name: "CI/CD", icon: "cicd" },
+  { name: "Jest", icon: "jest" },
+  { name: "Cypress", icon: "cypress" },
 ];
 
 export const services: Service[] = [
