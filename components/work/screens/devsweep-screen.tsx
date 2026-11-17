@@ -185,7 +185,7 @@ export function DevsweepScreen() {
       <div className="h-lh" />
       <DevsweepBanner at={ENTER} />
       <div className="loop-in text-sub" style={loopSteps(TAGLINE_AT)}>
-        {"  "}supply-chain &amp; credential risk scanner · v0.1.1
+        {"  "}supply-chain &amp; credential risk scanner · v0.2.0
       </div>
       <div className="h-lh" />
 

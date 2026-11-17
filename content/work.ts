@@ -125,19 +125,20 @@ export const caseStudies: CaseStudy[] = [
       { label: "npm", href: "https://www.npmjs.com/package/@frank1738/devsweep" },
     ],
     blurb:
-      "Finds the settings that would let a stolen token or a hijacked action do real damage, and tells you how to fix each one.",
-    stats: ["8 rules", "0 dependencies", "CLI + GitHub Action"],
+      "Finds the settings that would let a stolen token or a hijacked action do real damage, and malware planted in your repos, and tells you how to fix each one.",
+    stats: ["13 rules", "0 dependencies", "CLI + GitHub Action"],
     problem:
-      "Attackers often skip a project's code and go after something it trusts: a GitHub Action it uses, its release workflow, or a maintainer's access token. That's a supply-chain attack, and one common way tokens get stolen is infostealers: malware that copies saved passwords and tokens off developers' computers. How much damage a stolen token or a hijacked action can do comes down to settings: actions that could be swapped for different code, workflows that run strangers' pull request code with secrets, tokens with more access than they need, and branches and tags that can be force-pushed.",
+      "Attackers often skip a project's code and go after something it trusts: a GitHub Action it uses, its release workflow, or a maintainer's access token. That's a supply-chain attack, and one common way tokens get stolen is infostealers: malware that copies saved passwords and tokens off developers' computers. How much damage a stolen token or a hijacked action can do comes down to settings: actions that could be swapped for different code, workflows that run strangers' pull request code with secrets, tokens with more access than they need, and branches and tags that can be force-pushed. Some attacks plant the malware in a repository directly: the PolinRider campaign hides code off-screen in real files and in fake font files, and adds a VS Code task that runs it as soon as a developer opens the folder, often a take-home assignment from a fake recruiter.",
     built: [
-      "A command-line tool you run with npx @frank1738/devsweep in a repository. It checks the GitHub Actions workflows and the repository's settings on GitHub, then lists every finding by file: its severity, the line, what's wrong and what it's about. Add --details to see why each one is a risk, the lines of code involved and how to fix it.",
+      "A command-line tool you run with npx @frank1738/devsweep in a repository. It checks the GitHub Actions workflows, the repository's settings on GitHub and the code itself for signs of PolinRider, then lists every finding by file: its severity, the line, what's wrong and what it's about. Add --details to see why each one is a risk, the lines of code involved and how to fix it.",
       "It runs on your own machine or in CI as a GitHub Action, which prints the readable report in the job log and writes SARIF, the format GitHub's Security tab reads, so findings show up in code scanning and on pull requests. Findings you've reviewed and decided to keep are recorded in devsweep.config.json, each with a reason.",
+      "With --all it searches a whole drive for projects (folders with .git, .github/workflows or .vscode/tasks.json) and scans each one, offline. On my laptop that's 8,759 folders and 15 projects in under five seconds.",
     ],
     architecture: {
       steps: [
-        { name: "Folder to scan", detail: "CLI or GitHub Action" },
-        { name: "Read inputs", detail: "workflow YAML + GitHub API" },
-        { name: "8 rules", detail: "6 workflow, 2 repository" },
+        { name: "Folder to scan", detail: "one repo, or a drive with --all" },
+        { name: "Read inputs", detail: "workflows, code files, GitHub API" },
+        { name: "13 rules", detail: "6 workflow, 5 code, 2 repository" },
         { name: "Config", detail: "devsweep.config.json, optional" },
       ],
       outcomes: [
@@ -162,9 +163,17 @@ export const caseStudies: CaseStudy[] = [
         title: "Every exception needs a reason",
         body: "Reviewed findings are accepted in devsweep.config.json, matched on rule, file and subject, never on line numbers, which move. Each acceptance needs a reason, and one that stops matching anything shows up as a warning, so stale exceptions get cleaned up.",
       },
+      {
+        title: "Reads malware, never runs or prints it",
+        body: "The code rules read every file as text and never execute anything. Reports point at the line but never print it, even in --details, so a scan can't replay a payload into a terminal or a CI log. The known PolinRider markers are stored as hex, so devsweep's own files don't look infected to other scanners.",
+      },
+      {
+        title: "Fast enough for a whole drive",
+        body: "Each file is opened once, with at most 8 reads at a time across every project. Folders are listed once and reused by each project's scan, and one combined search rules out clean files before any per-marker work. Links and junctions are never followed, so a scan can't loop.",
+      },
     ],
     results: [
-      { value: "8", label: "rules: 6 for workflows, 2 for repository settings" },
+      { value: "13", label: "rules: 6 for workflows, 5 for planted code, 2 for repository settings" },
       { value: "0", label: "dependencies in the npm package" },
       { value: "3", label: "report formats: readable, JSON and SARIF" },
     ],
