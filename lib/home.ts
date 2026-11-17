@@ -11,12 +11,8 @@ export type IntroParagraph = {
   parts: IntroPart[];
 };
 
-/** Row dot colours in "The stack"; each maps to a `--sk-*` token. */
-export type StackTone = "ai" | "backend" | "frontend" | "infra";
-
 export type StackRow = {
   label: string;
-  tone: StackTone;
   /** One chip each, so recruiters can scan single keywords. */
   items: string[];
 };

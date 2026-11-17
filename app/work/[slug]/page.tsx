@@ -7,6 +7,7 @@ import { JsonLd } from "@/components/json-ld";
 import { NextCard } from "@/components/next-card";
 import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
+import { buttonVariants } from "@/components/ui/button";
 import { ArchitectureFlow } from "@/components/work/architecture-flow";
 import { CaseSection } from "@/components/work/case-section";
 import { ProjectScreen } from "@/components/work/project-screen";
@@ -82,12 +83,18 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
             <h1 className="enter-2 mt-3 text-4xl leading-[1.1] font-semibold tracking-tight text-accent">{study.title}</h1>
             <p className="enter-3 mt-3.5 text-lg leading-normal text-pretty text-ink">{study.statement}</p>
             {study.links && (
-              <ul className="enter-3 mt-4 flex flex-wrap gap-x-5 gap-y-2 font-mono text-2xs">
-                {study.links.map((link) => (
+              <ul className="enter-3 mt-6 flex flex-wrap gap-2.5">
+                {study.links.map((link, index) => (
                   <li key={link.href}>
-                    {/* Padding cancelled by margin: 24px+ tap targets without moving the text. */}
-                    <ExternalLink href={link.href} className="-my-1.5 inline-block py-1.5 text-sub hover:text-accent">
-                      {link.label} <span aria-hidden="true" className="font-mono-system">↗</span>
+                    {/* The first link (the live product, or the repo) leads; the rest are secondary. */}
+                    <ExternalLink
+                      href={link.href}
+                      className={buttonVariants({ variant: index === 0 ? "surface" : "outline", size: "md" })}
+                    >
+                      {link.label}
+                      <span aria-hidden="true" className="font-mono-system text-sub">
+                        ↗
+                      </span>
                     </ExternalLink>
                   </li>
                 ))}

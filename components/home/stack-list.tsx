@@ -1,14 +1,7 @@
 import type { CSSProperties } from "react";
 
-import { getStack, type StackTone } from "@/lib/home";
+import { getStack } from "@/lib/home";
 import { cn } from "@/lib/utils";
-
-const toneClassName = {
-  ai: "text-sk-ai",
-  backend: "text-sk-be",
-  frontend: "text-sk-fe",
-  infra: "text-sk-in",
-} satisfies Record<StackTone, string>;
 
 /**
  * "The stack": label/skills rows separated by 0.5px hairlines. Each skill is its own list item,
@@ -36,7 +29,7 @@ export function StackList({ className }: { className?: string }) {
               "last:after:absolute last:after:inset-x-0 last:after:bottom-0 last:after:h-[0.5px] last:after:origin-left last:after:bg-border/65",
             )}
           >
-            <dt className={cn("font-mono text-2xs leading-5", toneClassName[row.tone])}>{row.label}</dt>
+            <dt className={cn("font-mono text-2xs leading-5 text-sub")}>{row.label}</dt>
             <dd>
               <ul className="flex flex-wrap gap-x-4 font-mono text-xs leading-5 text-ink">
                 {row.items.map((item) => (

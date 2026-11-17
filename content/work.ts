@@ -9,7 +9,7 @@ export const workIndex: WorkIndex = {
   description:
     "Things I've shipped and things I'm building. The shipped ones open into a full write-up; the rest are still in the works.",
   plannedLabel: "In the works",
-  buildLabel: "in dev",
+  lockedLabel: "Under wraps",
 };
 
 /**

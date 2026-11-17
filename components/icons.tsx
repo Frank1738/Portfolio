@@ -41,11 +41,13 @@ export function MoonIcon(props: IconProps) {
   );
 }
 
-/** Lucide "mouse-pointer-2", inlined: the cursor building a planned project's screen. Its tip is at (4, 4.2). */
-export function PointerIcon(props: IconProps) {
+/** Lucide "lock-keyhole", inlined: a planned project's lock. The shackle is tagged `data-shackle` so it can move on its own. */
+export function LockIcon(props: IconProps) {
   return (
     <Icon {...props}>
-      <path d="M4.037 4.688a.495.495 0 0 1 .651-.651l16 6.5a.5.5 0 0 1-.063.947l-6.124 1.58a2 2 0 0 0-1.438 1.435l-1.579 6.126a.5.5 0 0 1-.947.063z" />
+      <path data-shackle d="M7 10V7a5 5 0 0 1 10 0v3" />
+      <rect x="3" y="10" width="18" height="12" rx="2" />
+      <circle cx="12" cy="16" r="1" />
     </Icon>
   );
 }

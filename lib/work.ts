@@ -69,8 +69,8 @@ export type WorkIndex = {
   description: string;
   /** Shown in place of the year on a planned project's card. */
   plannedLabel: string;
-  /** Name tag on the cursor that's still building a planned project's screen. */
-  buildLabel: string;
+  /** Label under the padlock on a planned project's screen. */
+  lockedLabel: string;
 };
 
 /** Home tile copy while the case studies aren't published yet. */

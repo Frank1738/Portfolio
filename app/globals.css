@@ -256,62 +256,30 @@
 }
 
 /*
- * A planned project's screen (InDevScreen), timed by `loopProgress()`: the built part is a
- * loop-wipe box, the cursor riding its edge a loop-slide box. --loop-delay (`loopPhase()`)
- * starts a screen part-way through its cycle, so planned cards side by side aren't in step.
+ * A planned project's lock (LockedScreen): hovering the card tugs the shackle, as if trying
+ * the lock. Under reduced motion the global rule removes it.
  */
-
-/* Moves like a loop-wipe box without clipping, so a marker can ride the edge of the reveal; fades in at the start of the cycle. */
-@utility loop-slide {
-  animation:
-    loop-fade 7s var(--loop-fade) infinite,
-    loop-wipe 7s var(--loop-enter) infinite;
-  animation-play-state: var(--loop-state, running);
-  animation-delay: var(--loop-delay, 0s);
+@keyframes lock-tug {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  25% {
+    translate: 0 -2.5px;
+  }
+  45% {
+    translate: 0 0;
+  }
+  65% {
+    translate: 0 -1.25px;
+  }
+  80% {
+    translate: 0 0;
+  }
 }
 
-@keyframes loop-press {
-  from {
-    scale: 1;
-  }
-  to {
-    scale: 0.86;
-  }
-}
-
-/* Pressed while --loop-press is 1: a cursor holding on to what it drags. */
-@utility loop-press {
-  animation: loop-press 7s var(--loop-press) infinite;
-  animation-play-state: var(--loop-state, running);
-  animation-delay: var(--loop-delay, 0s);
-}
-
-/*
- * A screen drawn as its own blueprint: text becomes bars (a thick line-through over clear
- * glyphs), and borders, fills and chart lines become dashed or hairline outlines. Layout is
- * untouched, so it lines up exactly with the same screen drawn normally. The screens give
- * fills only through `bg-*` classes, hence the attribute match. `!important`: it has to beat
- * each screen's own colour, border and fill utilities, whatever their order in the stylesheet.
- */
-@utility wireframe {
-  & * {
-    color: transparent !important;
-    text-decoration-line: line-through !important;
-    text-decoration-color: var(--border) !important;
-    text-decoration-thickness: 0.7em !important;
-    border-style: dashed !important;
-    border-color: var(--line) !important;
-  }
-
-  & [class*="bg-"] {
-    background: none !important;
-    outline: 1px dashed var(--line);
-    outline-offset: -1px;
-  }
-
-  & svg * {
-    stroke: var(--line) !important;
-  }
+@utility lock-tug {
+  animation: lock-tug 700ms var(--ease-soft);
 }
 
 /* ---------------------------------------------------------------------------

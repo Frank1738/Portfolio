@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { CookingTile } from "@/components/home/cooking-tile";
+import { NairobiMap } from "@/components/home/nairobi-map";
 import { TileHeader } from "@/components/home/tile-header";
 import { tileVariants } from "@/components/tile";
 import { ProjectScreen } from "@/components/work/project-screen";
@@ -36,7 +37,12 @@ export function SelectedWorkTile({ className }: { className?: string }) {
   const featured = getFeaturedCaseStudy();
 
   return (
-    <Link href="/work" data-skel="16" className={cn(tileVariants({ pressable: true }), "col-span-full gap-3.5", className)}>
+    <Link
+      href="/work"
+      data-skel="16"
+      className={cn(tileVariants({ pressable: true }), "relative isolate col-span-full gap-3.5 overflow-hidden", className)}
+    >
+      <NairobiMap className="pointer-events-none absolute inset-0 -z-1 size-full text-line" />
       <TileHeader>
         <h2 className="text-sm font-medium text-ink transition-colors duration-200 ease-[ease] group-hover/tile:text-accent">
           Selected work
@@ -45,7 +51,7 @@ export function SelectedWorkTile({ className }: { className?: string }) {
           {padCount(getCaseStudies().length)} projects <span aria-hidden="true" className="font-mono-system">→</span>
         </span>
       </TileHeader>
-      <div className="relative aspect-video overflow-hidden rounded-lg border border-border bg-bg">
+      <div className="relative aspect-video overflow-hidden">
         <span
           aria-hidden="true"
           className="pointer-events-none absolute top-1/2 left-1/2 z-2 -translate-1/2 rounded-sm bg-bg px-2 py-1 font-mono text-2xs tracking-label whitespace-nowrap text-accent opacity-0 transition-opacity duration-150 ease-out group-hover/tile:opacity-100"
@@ -53,7 +59,7 @@ export function SelectedWorkTile({ className }: { className?: string }) {
           SELECTED WORK
         </span>
         <div className="size-full transition-transform duration-240 ease-zoom group-hover/tile:scale-[1.015]">
-          <ProjectScreen kind={featured.slug} status={featured.status} />
+          <ProjectScreen kind={featured.slug} status={featured.status} className="bg-transparent" />
         </div>
       </div>
     </Link>

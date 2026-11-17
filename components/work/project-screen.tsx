@@ -3,13 +3,14 @@ import {
   BinocularsIcon,
   BroomIcon,
   FileSearchIcon,
+  LockIcon,
   RedCardIcon,
   SendIcon,
   WorkflowIcon,
   type IconProps,
 } from "@/components/icons";
 import { PauseOffscreen } from "@/components/pause-offscreen";
-import { InDevScreen, inDevBuild, inDevPhase } from "@/components/work/in-dev-screen";
+import { LockedScreen } from "@/components/work/locked-screen";
 import { DevsweepScreen } from "@/components/work/screens/devsweep-screen";
 import { FlowpilotScreen } from "@/components/work/screens/flowpilot-screen";
 import { LedgerlensScreen } from "@/components/work/screens/ledgerlens-screen";
@@ -22,7 +23,7 @@ import type { CaseStudySlug, CaseStudyStatus } from "@/lib/work";
 
 type ProjectScreenProps = {
   kind: CaseStudySlug;
-  /** `planned`: the screen is still being built (InDevScreen), with a progress bar in the title bar. */
+  /** `planned`: the screen is locked (LockedScreen), with a padlock in place of the title bar's meta. */
   status?: CaseStudyStatus;
   /**
    * Accessible name when the screen stands alone (case-study hero). Omit it inside a
@@ -34,7 +35,14 @@ type ProjectScreenProps = {
 };
 
 const screens = {
-  sentoff: { name: "Sent Off", meta: "League 1500 · GW10", Icon: RedCardIcon, Body: SentoffScreen },
+  // A 16:10 screenshot: a narrower, vertically centred window shows it whole inside the 16:9 frame.
+  sentoff: {
+    name: "Sent Off",
+    meta: "League 1500 · GW10",
+    Icon: RedCardIcon,
+    Body: SentoffScreen,
+    frame: "inset-x-[17%] top-1/2 -translate-y-1/2",
+  },
   devsweep: { name: "devsweep", meta: "Terminal", Icon: BroomIcon, Body: DevsweepScreen },
   relay: { name: "Relay", meta: "Inbox · 128 open", Icon: SendIcon, Body: RelayScreen },
   ledgerlens: { name: "Ledgerlens", meta: "40,214 docs", Icon: FileSearchIcon, Body: LedgerlensScreen },
@@ -43,7 +51,14 @@ const screens = {
   pulse: { name: "Pulse", meta: "Last 7 days", Icon: ActivityIcon, Body: PulseScreen },
 } satisfies Record<
   CaseStudySlug,
-  { name: string; meta: string; Icon: (props: IconProps) => React.ReactNode; Body: () => React.ReactNode }
+  {
+    name: string;
+    meta: string;
+    Icon: (props: IconProps) => React.ReactNode;
+    Body: () => React.ReactNode;
+    /** Window position override; defaults to `inset-x-[8%] top-[9%]`. */
+    frame?: string;
+  }
 >;
 
 /**
@@ -52,17 +67,23 @@ const screens = {
  * inline-size container (font-size 84cqw / 70 = 1.2cqw), so the UI scales with the frame.
  */
 export function ProjectScreen({ kind, status = "live", label, className }: ProjectScreenProps) {
-  const { name, meta, Icon, Body } = screens[kind];
+  const screen = screens[kind];
+  const { name, meta, Icon, Body } = screen;
+  const frame = "frame" in screen ? screen.frame : "inset-x-[8%] top-[9%]";
   const a11y = label ? { role: "img", "aria-label": label } : { "aria-hidden": true };
-  const building = status === "planned";
+  const locked = status === "planned";
 
   return (
     <PauseOffscreen
       {...a11y}
-      style={building ? inDevPhase(kind) : undefined}
       className={cn("@container relative aspect-video w-full overflow-hidden bg-tile", className)}
     >
-      <div className="absolute inset-x-[8%] top-[9%] overflow-hidden rounded-[.9em] border border-border bg-bg font-sans text-[1.2cqw] leading-[1.45] text-body shadow-[0_.6em_2.4em_rgba(0,0,0,.06)]">
+      <div
+        className={cn(
+          "absolute overflow-hidden rounded-[.9em] border border-border bg-bg font-sans text-[1.2cqw] leading-[1.45] text-body shadow-[0_.6em_2.4em_rgba(0,0,0,.06)]",
+          frame,
+        )}
+      >
         <div className="flex items-center justify-between border-b border-border px-[1.4em] py-[1em]">
           <div className="flex items-center gap-[.7em]">
             {/* The project's app icon: its glyph on an ink tile. */}
@@ -71,22 +92,16 @@ export function ProjectScreen({ kind, status = "live", label, className }: Proje
             </span>
             <span className="text-[1.15em] font-medium text-ink">{name}</span>
           </div>
-          {building ? (
-            // Build progress: follows the edge in the screen below.
-            <span className="relative h-[.45em] w-[7em] overflow-hidden rounded-full bg-border">
-              <span
-                className="loop-grow-x absolute inset-0 origin-left scale-x-[var(--loop-final)] bg-accent"
-                style={inDevBuild}
-              />
-            </span>
+          {locked ? (
+            <LockIcon className="size-[1.2em] text-sub" strokeWidth={2} />
           ) : (
             <span className="font-mono text-[.95em] text-sub">{meta}</span>
           )}
         </div>
-        {building ? (
-          <InDevScreen>
+        {locked ? (
+          <LockedScreen>
             <Body />
-          </InDevScreen>
+          </LockedScreen>
         ) : (
           <Body />
         )}

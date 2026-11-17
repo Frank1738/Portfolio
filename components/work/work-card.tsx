@@ -6,8 +6,8 @@ import { getWorkIndex, isCaseStudyLive, type CaseStudy } from "@/lib/work";
 
 /**
  * /work grid card: animated screen, title and year, blurb, stat line, linking to the case study.
- * A planned project's card doesn't open or react to hover: the planned label replaces the
- * year, and its placeholder stats aren't shown.
+ * A planned project's card doesn't open: its screen is locked (hovering only tugs the padlock),
+ * the planned label replaces the year, and its placeholder stats aren't shown.
  */
 export function WorkCard({ study }: { study: CaseStudy }) {
   const live = isCaseStudyLive(study);
@@ -34,7 +34,7 @@ export function WorkCard({ study }: { study: CaseStudy }) {
     </>
   );
 
-  if (!live) return <div className="flex flex-col gap-3 text-body">{content}</div>;
+  if (!live) return <div className="group/card flex flex-col gap-3 text-body">{content}</div>;
 
   // `prefetch`: the case study renders below the route's shared App Shell, so a default prefetch
   // would leave the page blank until the click. Case studies are static, so this costs no server work.

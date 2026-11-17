@@ -9,7 +9,6 @@ import type { CSSProperties } from "react";
  * passed in through CSS variables. The curves sample the prototype's easings.
  */
 
-const LOOP_SECONDS = 7;
 const LOOP_END = 0.93;
 const ENTRY_SAMPLES = 8;
 const EXIT_SAMPLES = 6;
@@ -35,8 +34,6 @@ function cubicBezier(x1: number, y1: number, x2: number, y2: number) {
 
 const easeEnter = cubicBezier(0.2, 0.7, 0.2, 1);
 const easeIn = cubicBezier(0.42, 0, 1, 1);
-/** A hand dragging something: eases in and out (--ease-shimmer). */
-const easeDrag = cubicBezier(0.45, 0, 0.25, 1);
 
 /** A `linear()` stop: the value at `at`, or held from `at` to `until`. */
 type Stop = [value: number, at: number, until?: number];
@@ -97,44 +94,4 @@ export function loopSteps(at: number, length = 0, steps = 1): LoopStyle {
     start + (index + 1) * step,
   ]);
   return toLoopStyle([...held, [1, end]]);
-}
-
-/** One move of a progress loop: the value travels to `to` between `at` and `until` (fractions of the cycle). */
-export type LoopMove = { at: number; until: number; to: number };
-
-/** How long a press lands before a move starts and lifts after it ends. */
-const PRESS = 0.012;
-
-/**
- * Progress timing, for something that advances in fits and starts. The value starts at 0 and
- * makes each move in turn (in cycle order, which may go back down), holding in between, until
- * the shared fade at 93%. Keyframes run 0 → 1, so for `loop-wipe`, `loop-slide` and
- * `loop-grow-x` the value is how far along they are. Sets:
- * - `--loop-enter`: the progress
- * - `--loop-fade`: a quick fade in at the start of the cycle, for `loop-slide`
- * - `--loop-press`: 1 while a move is under way, for `loop-press`
- * - `--loop-final`: where the progress ends, for the final frame under reduced motion
- */
-export function loopProgress(moves: readonly LoopMove[]): LoopStyle {
-  let value = 0;
-  const progress: Stop[] = [[0, 0]];
-  const press: Stop[] = [[0, 0]];
-
-  for (const move of moves) {
-    progress.push([value, move.at], ...sample(easeDrag, value, move.to, move.at, move.until, ENTRY_SAMPLES));
-    press.push([0, move.at - PRESS], [1, move.at], [1, move.until], [0, move.until + PRESS]);
-    value = move.to;
-  }
-
-  return {
-    "--loop-enter": toLinear([...progress, [value, 1]]),
-    "--loop-fade": toLinear([[0, 0], ...sample(easeEnter, 0, 1, 0, 0.03, 4), [1, LOOP_END], ...exit]),
-    "--loop-press": toLinear([...press, [0, 1]]),
-    "--loop-final": String(value),
-  };
-}
-
-/** Starts the loops inside an element `phase` (0–1) of the way into the cycle, via `--loop-delay`. */
-export function loopPhase(phase: number): LoopStyle {
-  return { "--loop-delay": `${Number((-phase * LOOP_SECONDS).toFixed(3))}s` };
 }

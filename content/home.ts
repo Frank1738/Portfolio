@@ -26,12 +26,11 @@ export const intro: IntroParagraph[] = [
 export const stack: StackRow[] = [
   {
     label: "AI",
-    tone: "ai",
     items: ["OpenAI API", "Anthropic (Claude) API", "LLM integrations", "AI-powered UIs"],
   },
-  { label: "Frontend", tone: "frontend", items: ["TypeScript", "React", "Next.js", "Redux", "Tailwind CSS"] },
-  { label: "Backend", tone: "backend", items: ["Node.js", "Express", "PostgreSQL", "MongoDB", "REST APIs"] },
-  { label: "Tooling", tone: "infra", items: ["Docker", "GitHub Actions", "CI/CD", "Jest", "Cypress"] },
+  { label: "Frontend", items: ["TypeScript", "React", "Next.js", "Redux", "Tailwind CSS"] },
+  { label: "Backend", items: ["Node.js", "Express", "PostgreSQL", "MongoDB", "REST APIs"] },
+  { label: "Tooling", items: ["Docker", "GitHub Actions", "CI/CD", "Jest", "Cypress"] },
 ];
 
 export const services: Service[] = [
